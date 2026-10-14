@@ -18,6 +18,7 @@
             text-align: center;
             background: #fff8ef;
         }
+        
         h1 {
             font-size: 40px;
         }
@@ -101,9 +102,9 @@
             height: 38%;
             border-radius: 50%;
             background: linear-gradient(
-            90deg,
-            rgba(255, 255, 255, 0.48),
-            rgba(255, 255, 255, 0)
+                90deg,
+                rgba(255, 255, 255, 0.48),
+                rgba(255, 255, 255, 0)
             );
             filter: blur(2px);
             transform: rotate(12deg);
@@ -327,6 +328,7 @@
                 50% 100%,
                 38% 55%
             );
+            
             transform-origin: 50% 0%;
             opacity: 0;
             filter: blur(0.2px);
@@ -648,7 +650,6 @@
                 max-height: 85vh;
                 max-height: 85dvh;
             }
-        }
 
             #food-wall {
                 grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -993,14 +994,14 @@
     
             <h2>TOTAL LIST</h2>
 
-        <form id="add-food-form" onsubmit="addFood(event)">
-            <label for="new-food-name">餐點名稱</label>
-            <input
-                id="new-food-name"
-                type="text"
-                placeholder="例如：牛肉麵"
-                required
-            >
+            <form id="add-food-form" onsubmit="addFood(event)">
+                <label for="new-food-name">餐點名稱</label>
+                <input
+                    id="new-food-name"
+                    type="text"
+                    placeholder="例如：牛肉麵"
+                    required
+                >
 
             <label for="new-food-image">餐點圖片</label>
             <input
@@ -1424,23 +1425,23 @@ function chooseFood() {
     document.getElementById("start-button").style.visibility = "hidden";
     document.getElementById("back-button").classList.add("hidden");
 
-            let count = 0;
+    let count = 0;
 
-            const delays = [
-                40, 45, 50, 55, 60,
-                70, 80, 95, 115, 140,
-                170, 205, 245, 290, 340
-            ];
+    const delays = [
+        40, 45, 50, 55, 60,
+        70, 80, 95, 115, 140,
+        170, 205, 245, 290, 340
+    ];
 
-  function showRandomFood() {
+    function showRandomFood() {
 
-      const randomIndex = Math.floor(Math.random() * availableFoods.length);
-      const food = availableFoods[randomIndex];
-
-      const result = document.getElementById("result");
-      result.innerHTML = "";
-      
-      const image = document.createElement("img");
+        const randomIndex = Math.floor(Math.random() * availableFoods.length);
+        const food = availableFoods[randomIndex];
+        
+        const result = document.getElementById("result");
+        result.innerHTML = "";
+        
+        const image = document.createElement("img");
       image.src = food.image;
       image.className = "food-image";
       image.alt = food.name;
