@@ -18,7 +18,7 @@
             text-align: center;
             background: #fff8ef;
         }
-        
+
         h1 {
             font-size: 40px;
         }
@@ -71,7 +71,7 @@
                 box-shadow 0.15s ease,
                 filter 0.15s ease;
         }
-        
+
         #start-button::before {
             content: "";
             position: absolute;
@@ -80,7 +80,6 @@
             width: 47%;
             height: 24%;
             border-radius: 50%;
-
             background: linear-gradient(
                 180deg,
                 rgba(255, 255, 255, 0.95),
@@ -115,13 +114,13 @@
             transform: translate(-50%, 4px);
             box-shadow: 0 0 0 #b71c1c;
         }
-        
+
         .food-image {
             width: 180px;
             height: 180px;
             object-fit: contain;
         }
-        
+
         .restart-text {
             margin-top: 20px;
             font-size: 36px;
@@ -133,11 +132,11 @@
         .food-name-placeholder {
             height: 38px;
         }
-        
+
         .fireworks-placeholder {
             height: 70px;
         }
-        
+
         .food-name-row {
             display: flex;
             align-items: center;
@@ -146,7 +145,7 @@
             min-height: 72px;
             height: auto;
         }
-        
+
         .food-name {
             flex: 1;
             min-width: 0;
@@ -155,7 +154,7 @@
             white-space: normal;
             overflow-wrap: anywhere;
         }
-        
+
         .fireworks {
             position: relative;
             width: 52px;
@@ -164,7 +163,7 @@
             overflow: visible;
             pointer-events: none;
         }
-        
+
         .firework {
             position: absolute;
             left: 50%;
@@ -175,7 +174,7 @@
             transform: translateX(-50%);
             animation: firework-flight 0.9s cubic-bezier(0.2, 0.8, 0.25, 1) forwards;
         }
-        
+
         .explosion-core {
             position: absolute;
             left: 50%;
@@ -190,10 +189,9 @@
                 0 0 24px rgba(255, 180, 50, 0.9);
             transform: translate(-50%, -50%) scale(0);
             opacity: 0;
-        
             animation: explosion-core 0.75s ease-out 0.82s forwards;
         }
-        
+
         .firework::after {
             content: "";
             position: absolute;
@@ -211,7 +209,7 @@
             transform: translateX(-50%);
             animation: firework-head-fade 0.9s ease-out forwards;
         }
-        
+
         .firework::before {
             content: "";
             position: absolute;
@@ -242,12 +240,12 @@
                 bottom: 0;
                 transform: translateX(-50%);
             }
-        
+
             75% {
                 bottom: 95px;
                 transform: translateX(-50%);
             }
-        
+
             100% {
                 bottom: 105px;
                 transform: translateX(-50%);
@@ -259,17 +257,17 @@
                 opacity: 0;
                 transform: translateX(-50%) scale(0.7);
             }
-        
+
             10% {
                 opacity: 1;
                 transform: translateX(-50%) scale(1);
             }
-        
+
             75% {
                 opacity: 1;
                 transform: translateX(-50%) scale(1);
             }
-        
+
             100% {
                 opacity: 0;
                 transform: translateX(-50%) scale(0.8);
@@ -282,31 +280,31 @@
                 opacity: 0;
                 transform: translateX(-50%) scaleY(0.2);
             }
-        
+
             10% {
                 height: 18px;
                 opacity: 1;
                 transform: translateX(-50%) scaleY(0.5);
             }
-        
+
             35% {
                 height: 30px;
                 opacity: 0.95;
                 transform: translateX(-50%) scaleY(0.85);
             }
-        
+
             60% {
                 height: 38px;
                 opacity: 0.85;
                 transform: translateX(-50%) scaleY(1);
             }
-        
+
             80% {
                 height: 30px;
                 opacity: 0.55;
                 transform: translateX(-50%) scaleY(0.85);
             }
-        
+
             100% {
                 height: 12px;
                 opacity: 0;
@@ -314,7 +312,7 @@
                 visibility: hidden;
             }
         }
-        
+
         .spark {
             position: absolute;
             left: 50%;
@@ -328,43 +326,40 @@
                 50% 100%,
                 38% 55%
             );
-            
             transform-origin: 50% 0%;
             opacity: 0;
             filter: blur(0.2px);
-        
             box-shadow:
                 0 0 3px currentColor,
                 0 0 7px currentColor;
-        
             animation:
                 firework-explosion 1.35s cubic-bezier(0.12, 0.65, 0.25, 1)
                 0.82s forwards;
         }
-        
+
         @keyframes explosion-core {
             0% {
                 opacity: 0;
                 transform: translate(-50%, -50%) scale(0);
             }
-        
+
             20% {
                 opacity: 1;
                 transform: translate(-50%, -50%) scale(1.8);
             }
-        
+
             55% {
                 opacity: 0.8;
                 transform: translate(-50%, -50%) scale(1);
             }
-        
+
             100% {
                 opacity: 0;
                 visibility: hidden;
                 transform: translate(-50%, -50%) scale(0);
             }
         }
-        
+
         @keyframes firework-explosion {
             0% {
                 transform:
@@ -372,52 +367,52 @@
                     rotate(var(--angle))
                     translateY(0)
                     scaleY(0.05);
-        
+
                 opacity: 0;
             }
-        
+
             8% {
                 opacity: 1;
             }
-        
+
             35% {
                 opacity: 1;
-        
+
                 transform:
                     translate(-50%, -50%)
                     rotate(var(--angle))
                     translateY(calc(-1 * var(--distance)))
                     scaleY(1);
             }
-        
+
             55% {
                 opacity: 0.75;
-        
+
                 transform:
                     translate(-50%, -50%)
                     rotate(var(--angle))
                     translateY(calc(-1 * (var(--distance) + 10px)))
                     scaleY(0.75);
             }
-        
+
             75% {
                 opacity: 0.35;
-        
+
                 transform:
                     translate(-50%, -50%)
                     rotate(var(--angle))
                     translateY(calc(-1 * (var(--distance) + 22px)))
                     scaleY(0.45);
             }
-        
+
             92% {
                 opacity: 0.08;
             }
-        
+
             100% {
                 opacity: 0;
                 visibility: hidden;
-        
+
                 transform:
                     translate(-50%, -50%)
                     rotate(var(--angle))
@@ -425,8 +420,8 @@
                     scaleY(0.1);
             }
         }
-        
-       #food-wall {
+
+        #food-wall {
             position: fixed;
             top: 0;
             left: 0;
@@ -448,11 +443,11 @@
         #food-wall.lunch-wall {
             background: #d6e8f5;
         }
-        
+
         #food-wall.dinner-wall {
             background: #353535;
         }
-        
+
         .wall-food {
             width: 100%;
             height: 100%;
@@ -460,19 +455,19 @@
             opacity: 0.22;
             filter: saturate(1.15);
         }
-            
+
         .wall-food:nth-child(3n) {
             transform: rotate(-10deg) scale(0.9);
         }
-        
+
         .wall-food:nth-child(3n + 1) {
             transform: rotate(8deg) scale(0.95);
         }
-        
+
         .wall-food:nth-child(3n + 2) {
             transform: rotate(-4deg) scale(0.85);
         }
-        
+
         .main-card {
             position: relative;
             z-index: 1;
@@ -519,7 +514,7 @@
             overflow: visible;
             transform: translate(4px, 0);
         }
-        
+
         .u-turn-arrow path {
             fill: none;
             stroke: white;
@@ -527,16 +522,16 @@
             stroke-linecap: round;
             stroke-linejoin: round;
         }
-        
+
         #back-button:active {
             transform: translateY(4px);
             box-shadow: 0 1px 0 #b71c1c;
         }
-        
+
         #back-button.hidden {
             display: none;
         }
-        
+
         #list-button {
             position: fixed;
             right: 18px;
@@ -565,7 +560,7 @@
             background: rgba(0, 0, 0, 0.35);
             box-sizing: border-box;
         }
-        
+
         .food-list-hidden {
             display: none !important;
         }
@@ -582,7 +577,7 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             box-sizing: border-box;
         }
-        
+
         .food-list-box h2 {
             margin: 0 0 20px;
             font-size: 28px;
@@ -602,7 +597,7 @@
             line-height: 36px;
             box-shadow: none;
         }
-        
+
         #food-list-items {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -622,13 +617,13 @@
             font-weight: bold;
             min-width: 0;
         }
-        
+
         .food-list-name {
             flex: 1;
             min-width: 0;
             overflow-wrap: anywhere;
         }
-        
+
         .food-delete-button {
             flex-shrink: 0;
             padding: 6px 10px;
@@ -640,7 +635,7 @@
             font-weight: bold;
             cursor: pointer;
         }
-            
+
         @media (max-width: 600px) {
             #food-list-items {
                 grid-template-columns: 1fr;
@@ -657,7 +652,7 @@
                 gap: 8px;
                 padding: 8px;
             }
-    
+
             .main-card {
                 padding: 20px 10px 130px;
                 border-radius: 24px;
@@ -677,7 +672,7 @@
             background: #fff8ef;
             transition: opacity 0.4s ease, visibility 0.4s ease;
         }
-        
+
         #meal-selector h2 {
             margin: 0 0 40px;
             font-size: 32px;
@@ -685,7 +680,7 @@
             top: 21vh;
             transform: translateY(-50%);
         }
-        
+
         .meal-options {
             display: flex;
             gap: 19px;
@@ -694,7 +689,7 @@
             top: 46vh;
             transform: translateY(-50%);
         }
-        
+
         .meal-button {
             width: 104px;
             height: 128px;
@@ -711,43 +706,43 @@
                 0 10px 20px rgba(0, 0, 0, 0.12);
             transition: transform 0.15s ease;
         }
-        
+
         .meal-button:active {
             transform: translateY(4px);
             box-shadow:
                 0 2px 0 rgba(0, 0, 0, 0.12),
                 0 5px 12px rgba(0, 0, 0, 0.10);
         }
-        
+
         .meal-button.lunch {
             background: #fff3b0;
         }
-        
+
         .meal-button.dinner {
             background: #dfe7ff;
         }
-        
+
         .meal-icon {
             font-size: 45px;
             line-height: 1;
         }
-        
+
         .meal-text {
             font-size: 19px;
             font-weight: bold;
         }
-        
+
         #meal-selector.hidden {
             opacity: 0;
             visibility: hidden;
             pointer-events: none;
         }
-        
+
         @media (max-width: 600px) {
             .meal-options {
                 gap: 15px;
             }
-        
+
             .meal-button {
                 width: 104px;
                 height: 128px;
@@ -768,7 +763,7 @@
             cursor: pointer;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
         }
-        
+
         #total-list-modal {
             position: fixed;
             inset: 0;
@@ -784,7 +779,7 @@
         .total-list-hidden {
             display: none !important;
         }
-        
+
         .total-list-box {
             position: relative;
             width: 100%;
@@ -800,17 +795,17 @@
             box-sizing: border-box;
             text-align: left;
         }
-        
+
         .total-list-box h2 {
             margin: 0 0 22px;
             text-align: center;
             font-size: 28px;
         }
-        
+
         .total-list-box h3 {
             margin-top: 20px;
         }
-        
+
         #total-list-close {
             position: absolute;
             top: 10px;
@@ -824,17 +819,17 @@
             font-size: 26px;
             cursor: pointer;
         }
-        
+
         #add-food-form {
             display: flex;
             flex-direction: column;
             gap: 10px;
         }
-        
+
         #add-food-form > label {
             font-weight: bold;
         }
-        
+
         #new-food-name,
         #new-food-image {
             width: 100%;
@@ -845,20 +840,20 @@
             background: white;
             font-size: 15px;
         }
-        
+
         .meal-checkboxes {
             display: flex;
             gap: 20px;
             margin: 4px 0 10px;
         }
-        
+
         .meal-checkboxes label {
             display: flex;
             align-items: center;
             gap: 5px;
             font-weight: bold;
         }
-        
+
         #add-food-button {
             padding: 12px;
             border: none;
@@ -869,7 +864,7 @@
             font-weight: bold;
             cursor: pointer;
         }
-        
+
         .total-food-item {
             display: flex;
             align-items: center;
@@ -879,7 +874,7 @@
             border-radius: 12px;
             background: #fff3e5;
         }
-        
+
         .total-food-item img {
             width: 58px;
             height: 58px;
@@ -888,19 +883,19 @@
             object-fit: contain;
             background: white;
         }
-        
+
         .total-food-info {
             flex: 1;
             min-width: 0;
             overflow-wrap: anywhere;
         }
-        
+
         .total-food-meals {
             margin-top: 5px;
             color: #666;
             font-size: 12px;
         }
-        
+
         .total-food-delete {
             flex-shrink: 0;
             padding: 8px 10px;
@@ -911,46 +906,49 @@
             font-weight: bold;
             cursor: pointer;
         }
-        
+
         .total-food-empty {
             padding: 16px 0;
             color: #777;
             text-align: center;
         }
-        
+
         @media (max-width: 600px) {
             #total-list-button {
                 top: 10px;
                 right: 10px;
                 padding: 9px 12px;
             }
-        
+
             .total-list-box {
                 padding: 26px 15px;
             }
         }
-
-</style>    
+    </style>
 </head>
 
 <body>
 
     <div id="meal-selector">
         <h2>要吃哪一餐？</h2>
-    
+
         <button id="total-list-button" onclick="openTotalList()">
             TOTAL LIST
         </button>
-    
+
         <div class="meal-options">
-            <button class="meal-button lunch"
-                    onclick="selectMeal('lunch')">
+            <button
+                class="meal-button lunch"
+                onclick="selectMeal('lunch')"
+            >
                 <span class="meal-icon">☀️</span>
                 <span class="meal-text">午餐</span>
             </button>
-    
-            <button class="meal-button dinner"
-                    onclick="selectMeal('dinner')">
+
+            <button
+                class="meal-button dinner"
+                onclick="selectMeal('dinner')"
+            >
                 <span class="meal-icon">🌙</span>
                 <span class="meal-text">晚餐</span>
             </button>
@@ -967,7 +965,7 @@
     </button>
 
     <button id="list-button" onclick="toggleFoodList()">LIST</button>
-    
+
     <main class="main-card">
         <h1 id="meal-title">要吃什麼咧？</h1>
 
@@ -987,11 +985,15 @@
 
     <div id="total-list-modal" class="total-list-hidden">
         <div class="total-list-box">
-    
-            <button id="total-list-close"
-                    onclick="closeTotalList()"
-                    aria-label="關閉">×</button>
-    
+
+            <button
+                id="total-list-close"
+                onclick="closeTotalList()"
+                aria-label="關閉"
+            >
+                ×
+            </button>
+
             <h2>TOTAL LIST</h2>
 
             <form id="add-food-form" onsubmit="addFood(event)">
@@ -1003,469 +1005,463 @@
                     required
                 >
 
-            <label for="new-food-image">餐點圖片</label>
-            <input
-                id="new-food-image"
-                type="file"
-                accept="image/*"
-                required
-            >
+                <label for="new-food-image">餐點圖片</label>
+                <input
+                    id="new-food-image"
+                    type="file"
+                    accept="image/*"
+                    required
+                >
 
-            <label>列入餐別</label>
+                <label>列入餐別</label>
 
-            <div class="meal-checkboxes">
-                <label>
-                    <input
-                        type="checkbox"
-                        name="new-food-meal"
-                        value="lunch"
-                        checked
-                    >
-                    ☀️ 午餐
-                </label>
+                <div class="meal-checkboxes">
+                    <label>
+                        <input
+                            type="checkbox"
+                            name="new-food-meal"
+                            value="lunch"
+                            checked
+                        >
+                        ☀️ 午餐
+                    </label>
 
-                <label>
-                    <input
-                        type="checkbox"
-                        name="new-food-meal"
-                        value="dinner"
-                        checked
-                    >
-                    🌙 晚餐
-                </label>
-            </div>
+                    <label>
+                        <input
+                            type="checkbox"
+                            name="new-food-meal"
+                            value="dinner"
+                            checked
+                        >
+                        🌙 晚餐
+                    </label>
+                </div>
 
-            <button type="submit" id="add-food-button">
-                ＋ 新增餐點
-            </button>
-        </form>
+                <button
+                    type="submit"
+                    id="add-food-button"
+                >
+                    ＋ 新增餐點
+                </button>
+            </form>
 
-        <hr>
+            <hr>
 
-        <h3>所有餐點</h3>
-        <div id="total-food-list-items"></div>
-
+            <h3>所有餐點</h3>
+            <div id="total-food-list-items"></div>
+        </div>
     </div>
-</div>
 
-<script>
+    <script>
 
-const FOODS_STORAGE_KEY = "mealSelectorFoodsV2";
+        const FOODS_STORAGE_KEY = "mealSelectorFoodsV2";
 
-function loadFoods() {
-    try {
-        const savedFoods = localStorage.getItem(FOODS_STORAGE_KEY);
+        function loadFoods() {
+            try {
+                const savedFoods = localStorage.getItem(FOODS_STORAGE_KEY);
 
-        if (savedFoods === null) {
-            return [];
+                if (savedFoods === null) {
+                    return [];
+                }
+
+                const parsedFoods = JSON.parse(savedFoods);
+
+                if (!Array.isArray(parsedFoods)) {
+                    return [];
+                }
+
+                return parsedFoods.filter(function (food) {
+                    return (
+                        food &&
+                        typeof food.id === "string" &&
+                        typeof food.name === "string" &&
+                        typeof food.image === "string" &&
+                        Array.isArray(food.meals) &&
+                        food.meals.length > 0 &&
+                        food.meals.every(function (meal) {
+                            return meal === "lunch" || meal === "dinner";
+                        })
+                    );
+                });
+            } catch (error) {
+                console.error("讀取餐點資料失敗：", error);
+                alert("讀取餐點資料失敗，請檢查瀏覽器儲存空間。");
+                return [];
+            }
         }
 
-        const parsedFoods = JSON.parse(savedFoods);
+        let foods = loadFoods();
+        let availableFoods = foods;
+        let currentMeal = "total";
 
-        if (!Array.isArray(parsedFoods)) {
-            return [];
+        const foodWall = document.getElementById("food-wall");
+        const foodListItems = document.getElementById("food-list-items");
+        const totalFoodListItems =
+            document.getElementById("total-food-list-items");
+
+        function saveFoods(nextFoods) {
+            try {
+                localStorage.setItem(
+                    FOODS_STORAGE_KEY,
+                    JSON.stringify(nextFoods)
+                );
+
+                return true;
+            } catch (error) {
+                console.error("儲存餐點資料失敗：", error);
+
+                alert(
+                    "儲存失敗！可能是瀏覽器儲存空間不足，" +
+                    "請縮小圖片後再試一次。"
+                );
+
+                return false;
+            }
         }
 
-        return parsedFoods.filter(function(food) {
-            return (
-                food &&
-                typeof food.id === "string" &&
-                typeof food.name === "string" &&
-                typeof food.image === "string" &&
-                Array.isArray(food.meals) &&
-                food.meals.length > 0 &&
-                food.meals.every(function(meal) {
-                    return meal === "lunch" || meal === "dinner";
-                })
+        function openTotalList() {
+            renderTotalFoodList();
+
+            document.getElementById("total-list-modal")
+                .classList.remove("total-list-hidden");
+        }
+
+        function closeTotalList() {
+            document.getElementById("total-list-modal")
+                .classList.add("total-list-hidden");
+        }
+
+        function renderTotalFoodList() {
+            totalFoodListItems.innerHTML = "";
+
+            if (foods.length === 0) {
+                totalFoodListItems.innerHTML =
+                    '<div class="total-food-empty">' +
+                    '目前沒有餐點，請新增第一道餐點！' +
+                    '</div>';
+                return;
+            }
+
+            foods.forEach(function (food) {
+                const item = document.createElement("div");
+                item.className = "total-food-item";
+
+                const img = document.createElement("img");
+                img.src = food.image;
+                img.alt = food.name;
+
+                const info = document.createElement("div");
+                info.className = "total-food-info";
+
+                const name = document.createElement("strong");
+                name.textContent = food.name;
+
+                const meals = document.createElement("div");
+                meals.className = "total-food-meals";
+
+                const mealLabels = [];
+
+                if (food.meals.includes("lunch")) {
+                    mealLabels.push("☀️ 午餐");
+                }
+
+                if (food.meals.includes("dinner")) {
+                    mealLabels.push("🌙 晚餐");
+                }
+
+                meals.textContent = mealLabels.join("、");
+
+                info.appendChild(name);
+                info.appendChild(meals);
+
+                const deleteButton = document.createElement("button");
+                deleteButton.className = "total-food-delete";
+                deleteButton.textContent = "刪除";
+                deleteButton.type = "button";
+
+                deleteButton.addEventListener("click", function () {
+                    deleteFood(food.id);
+                });
+
+                item.appendChild(img);
+                item.appendChild(info);
+                item.appendChild(deleteButton);
+
+                totalFoodListItems.appendChild(item);
+            });
+        }
+
+        function addFood(event) {
+            event.preventDefault();
+
+            const nameInput = document.getElementById("new-food-name");
+            const imageInput = document.getElementById("new-food-image");
+
+            const name = nameInput.value.trim();
+            const file = imageInput.files[0];
+
+            const selectedMeals = Array.from(
+                document.querySelectorAll(
+                    'input[name="new-food-meal"]:checked'
+                )
+            ).map(function (input) {
+                return input.value;
+            });
+
+            if (!name) {
+                alert("請輸入餐點名稱！");
+                return;
+            }
+
+            if (!file || !file.type.startsWith("image/")) {
+                alert("請選擇有效的圖片檔案！");
+                return;
+            }
+
+            const MAX_IMAGE_SIZE = 2 * 1024 * 1024; // 2 MB
+
+            if (file.size > MAX_IMAGE_SIZE) {
+                alert("圖片太大，請選擇小於 2 MB 的圖片。");
+                return;
+            }
+
+            if (selectedMeals.length === 0) {
+                alert("請至少選擇午餐或晚餐！");
+                return;
+            }
+
+            const reader = new FileReader();
+
+            reader.onload = function () {
+                if (typeof reader.result !== "string") {
+                    alert("圖片讀取失敗，請重新選擇圖片。");
+                    return;
+                }
+
+                const newFood = {
+                    id: crypto.randomUUID(),
+                    name: name,
+                    image: reader.result,
+                    meals: selectedMeals
+                };
+
+                const nextFoods = [...foods, newFood];
+
+                if (!saveFoods(nextFoods)) {
+                    return;
+                }
+
+                foods = nextFoods;
+                refreshFoodData();
+
+                document.getElementById("add-food-form").reset();
+                renderTotalFoodList();
+
+                alert("餐點新增成功！");
+            };
+
+            reader.onerror = function () {
+                alert("圖片讀取失敗，請重新選擇圖片。");
+            };
+
+            reader.readAsDataURL(file);
+        }
+
+        function deleteFood(foodId) {
+            const food = foods.find(function (item) {
+                return item.id === foodId;
+            });
+
+            if (!food) {
+                return;
+            }
+
+            if (!confirm("確定要刪除「" + food.name + "」嗎？")) {
+                return;
+            }
+
+            const nextFoods = foods.filter(function (item) {
+                return item.id !== foodId;
+            });
+
+            if (!saveFoods(nextFoods)) {
+                return;
+            }
+
+            foods = nextFoods;
+
+            refreshFoodData();
+
+            renderTotalFoodList();
+        }
+
+        function refreshFoodData() {
+            if (currentMeal === "total") {
+                availableFoods = foods;
+            } else {
+                availableFoods = foods.filter(function (food) {
+                    return food.meals.includes(currentMeal);
+                });
+            }
+
+            if (currentMeal !== "total") {
+                updateFoodWall();
+            }
+        }
+
+        function renderFoodList() {
+            foodListItems.innerHTML = "";
+
+            const title = document.getElementById("food-list-title");
+
+            title.textContent =
+                currentMeal === "lunch"
+                    ? "☀️ 午餐清單"
+                    : currentMeal === "dinner"
+                        ? "🌙 晚餐清單"
+                        : "餐點清單";
+
+            availableFoods.forEach(function (food) {
+                const item = document.createElement("div");
+                item.className = "food-list-item";
+
+                const name = document.createElement("span");
+                name.className = "food-list-name";
+                name.textContent = food.name;
+
+                item.appendChild(name);
+                foodListItems.appendChild(item);
+            });
+        }
+
+        function toggleFoodList() {
+            if (currentMeal === "total") {
+                openTotalList();
+                return;
+            }
+
+            renderFoodList();
+
+            document.getElementById("food-list")
+                .classList.toggle("food-list-hidden");
+        }
+
+        function selectMeal(meal) {
+            currentMeal = meal;
+
+            document.getElementById("meal-title").textContent =
+                meal === "lunch" ? "午餐吃什麼？" : "晚餐咧？";
+
+            availableFoods = foods.filter(function (food) {
+                return food.meals.includes(meal);
+            });
+
+            renderFoodList();
+
+            foodWall.classList.remove("lunch-wall", "dinner-wall");
+            foodWall.classList.add(
+                meal === "lunch" ? "lunch-wall" : "dinner-wall"
             );
-        });
-    } catch (error) {
-        console.error("讀取餐點資料失敗：", error);
-        alert("讀取餐點資料失敗，請檢查瀏覽器儲存空間。");
-        return [];
-    }
-}
 
-let foods = loadFoods();
-let availableFoods = foods;
-let currentMeal = "total";
+            updateFoodWall();
 
-const foodWall = document.getElementById("food-wall");
-const foodListItems = document.getElementById("food-list-items");
-const totalFoodListItems =
-    document.getElementById("total-food-list-items");
+            document.getElementById("meal-selector")
+                .classList.add("hidden");
 
-function saveFoods(nextFoods) {
-    try {
-        localStorage.setItem(
-            FOODS_STORAGE_KEY,
-            JSON.stringify(nextFoods)
-        );
-
-        return true;
-    } catch (error) {
-        console.error("儲存餐點資料失敗：", error);
-        alert(
-            "儲存失敗！可能是瀏覽器儲存空間不足，" +
-            "請縮小圖片後再試一次。"
-        );
-
-        return false;
-    }
-}
-
-function openTotalList() {
-    renderTotalFoodList();
-
-    document.getElementById("total-list-modal")
-        .classList.remove("total-list-hidden");
-}
-
-function closeTotalList() {
-    document.getElementById("total-list-modal")
-        .classList.add("total-list-hidden");
-}
-
-function renderTotalFoodList() {
-    totalFoodListItems.innerHTML = "";
-
-    if (foods.length === 0) {
-        totalFoodListItems.innerHTML =
-            '<div class="total-food-empty">' +
-            '目前沒有餐點，請新增第一道餐點！' +
-            '</div>';
-        return;
-    }
-
-    foods.forEach(function(food) {
-        const item = document.createElement("div");
-        item.className = "total-food-item";
-
-        const img = document.createElement("img");
-        img.src = food.image;
-        img.alt = food.name;
-
-        const info = document.createElement("div");
-        info.className = "total-food-info";
-
-        const name = document.createElement("strong");
-        name.textContent = food.name;
-
-        const meals = document.createElement("div");
-        meals.className = "total-food-meals";
-
-        const mealLabels = [];
-
-        if (food.meals.includes("lunch")) {
-            mealLabels.push("☀️ 午餐");
+            document.getElementById("back-button")
+                .classList.remove("hidden");
         }
 
-        if (food.meals.includes("dinner")) {
-            mealLabels.push("🌙 晚餐");
+        function updateFoodWall() {
+            foodWall.innerHTML = "";
+
+            if (availableFoods.length === 0) {
+                return;
+            }
+
+            for (let i = 0; i < 60; i++) {
+                const food = availableFoods[i % availableFoods.length];
+
+                const img = document.createElement("img");
+                img.src = food.image;
+                img.alt = "";
+                img.className = "wall-food";
+                img.loading = "eager";
+
+                foodWall.appendChild(img);
+            }
         }
 
-        meals.textContent = mealLabels.join("、");
+        function backToMealSelector() {
+            currentMeal = "total";
+            availableFoods = foods;
 
-        info.appendChild(name);
-        info.appendChild(meals);
+            document.getElementById("meal-selector")
+                .classList.remove("hidden");
 
-        const deleteButton = document.createElement("button");
-        deleteButton.className = "total-food-delete";
-        deleteButton.textContent = "刪除";
-        deleteButton.type = "button";
+            document.getElementById("back-button")
+                .classList.add("hidden");
 
-        deleteButton.addEventListener("click", function() {
-            deleteFood(food.id);
-        });
+            document.getElementById("start-button").style.visibility =
+                "visible";
 
-        item.appendChild(img);
-        item.appendChild(info);
-        item.appendChild(deleteButton);
+            document.getElementById("result").innerHTML =
+                "手黑黑還是白白！？";
 
-        totalFoodListItems.appendChild(item);
-    });
-}
+            foodWall.innerHTML = "";
 
-function addFood(event) {
-    event.preventDefault();
-
-    const nameInput = document.getElementById("new-food-name");
-    const imageInput = document.getElementById("new-food-image");
-
-    const name = nameInput.value.trim();
-    const file = imageInput.files[0];
-
-    const selectedMeals = Array.from(
-        document.querySelectorAll(
-            'input[name="new-food-meal"]:checked'
-        )
-    ).map(function(input) {
-        return input.value;
-    });
-
-    if (!name) {
-        alert("請輸入餐點名稱！");
-        return;
-    }
-
-    if (!file || !file.type.startsWith("image/")) {
-        alert("請選擇有效的圖片檔案！");
-        return;
-    }
-
-    const MAX_IMAGE_SIZE = 2 * 1024 * 1024; // 2 MB
-    
-    if (file.size > MAX_IMAGE_SIZE) {
-        alert("圖片太大，請選擇小於 2 MB 的圖片。");
-        return;
-    }
-
-    if (selectedMeals.length === 0) {
-        alert("請至少選擇午餐或晚餐！");
-        return;
-    }
-
-    const reader = new FileReader();
-
-    reader.onload = function() {
-        if (typeof reader.result !== "string") {
-            alert("圖片讀取失敗，請重新選擇圖片。");
-            return;
+            document.getElementById("food-list")
+                .classList.add("food-list-hidden");
         }
 
-        const newFood = {
-            id: crypto.randomUUID(),
-            name: name,
-            image: reader.result,
-            meals: selectedMeals
-        };
+        function chooseFood() {
+            if (availableFoods.length === 0) {
+                alert("目前沒有可抽選的餐點，請先確認 TOTAL LIST。");
+                return;
+            }
 
-        const nextFoods = [...foods, newFood];
+            document.getElementById("start-button").style.visibility = "hidden";
+            document.getElementById("back-button").classList.add("hidden");
 
-        if (!saveFoods(nextFoods)) {
-            return;
-        }
+            let count = 0;
 
-        foods = nextFoods;
+            const delays = [
+                40, 45, 50, 55, 60,
+                70, 80, 95, 115, 140,
+                170, 205, 245, 290, 340
+            ];
 
-        refreshFoodData();
+            function showRandomFood() {
+                const randomIndex = Math.floor(Math.random() * availableFoods.length);
+                const food = availableFoods[randomIndex];
 
-        document.getElementById("add-food-form").reset();
+                const result = document.getElementById("result");
+                result.innerHTML = "";
 
-        renderTotalFoodList();
+                const image = document.createElement("img");
+                image.src = food.image;
+                image.className = "food-image";
+                image.alt = food.name;
 
-        alert("餐點新增成功！");
-    };
-
-    reader.onerror = function() {
-        alert("圖片讀取失敗，請重新選擇圖片。");
-    };
-
-    reader.readAsDataURL(file);
-}
-
-function deleteFood(foodId) {
-    const food = foods.find(function(item) {
-        return item.id === foodId;
-    });
-
-    if (!food) {
-        return;
-    }
-
-    if (!confirm("確定要刪除「" + food.name + "」嗎？")) {
-        return;
-    }
-
-    const nextFoods = foods.filter(function(item) {
-        return item.id !== foodId;
-    });
-
-    if (!saveFoods(nextFoods)) {
-        return;
-    }
-
-    foods = nextFoods;
-
-    refreshFoodData();
-
-    renderTotalFoodList();
-}
-
-function refreshFoodData() {
-    if (currentMeal === "total") {
-        availableFoods = foods;
-    } else {
-        availableFoods = foods.filter(function(food) {
-            return food.meals.includes(currentMeal);
-        });
-    }
-
-    if (currentMeal !== "total") {
-        updateFoodWall();
-    }
-}
-
-function renderFoodList() {
-    foodListItems.innerHTML = "";
-
-    const title = document.getElementById("food-list-title");
-
-    title.textContent = currentMeal === "lunch"
-        ? "☀️ 午餐清單"
-        : currentMeal === "dinner"
-            ? "🌙 晚餐清單"
-            : "餐點清單";
-
-    if (availableFoods.length === 0) {
-        foodListItems.innerHTML =
-            '<div class="total-food-empty">目前沒有餐點</div>';
-        return;
-    }
-
-    availableFoods.forEach(function(food) {
-        const item = document.createElement("div");
-        item.className = "food-list-item";
-
-        const name = document.createElement("span");
-        name.className = "food-list-name";
-        name.textContent = food.name;
-
-        item.appendChild(name);
-        foodListItems.appendChild(item);
-    });
-}
-
-function toggleFoodList() {
-    if (currentMeal === "total") {
-        openTotalList();
-        return;
-    }
-
-    renderFoodList();
-
-    document.getElementById("food-list")
-        .classList.toggle("food-list-hidden");
-}
-
-function selectMeal(meal) {
-    currentMeal = meal;
-
-    document.getElementById("meal-title").textContent =
-        meal === "lunch" ? "午餐吃什麼？" : "晚餐咧？";
-
-    availableFoods = foods.filter(function(food) {
-        return food.meals.includes(meal);
-    });
-
-    renderFoodList();
-
-    foodWall.classList.remove("lunch-wall", "dinner-wall");
-    foodWall.classList.add(
-        meal === "lunch" ? "lunch-wall" : "dinner-wall"
-    );
-
-    updateFoodWall();
-
-    document.getElementById("meal-selector")
-        .classList.add("hidden");
-
-    document.getElementById("back-button")
-        .classList.remove("hidden");
-}
-
-function updateFoodWall() {
-    foodWall.innerHTML = "";
-
-    if (availableFoods.length === 0) {
-        return;
-    }
-
-    for (let i = 0; i < 60; i++) {
-        const food = availableFoods[i % availableFoods.length];
-
-        const img = document.createElement("img");
-        img.src = food.image;
-        img.alt = "";
-        img.className = "wall-food";
-        img.loading = "eager";
-
-        foodWall.appendChild(img);
-    }
-}
-
-function backToMealSelector() {
-    currentMeal = "total";
-    availableFoods = foods;
-
-    document.getElementById("meal-selector")
-        .classList.remove("hidden");
-
-    document.getElementById("back-button")
-        .classList.add("hidden");
-
-    document.getElementById("start-button").style.visibility =
-        "visible";
-
-    document.getElementById("result").innerHTML =
-        "手黑黑還是白白！？";
-
-    foodWall.innerHTML = "";
-
-    document.getElementById("food-list")
-        .classList.add("food-list-hidden");
-}
-
-function chooseFood() {
-    if (availableFoods.length === 0) {
-        alert("目前沒有可抽選的餐點，請先確認 TOTAL LIST。");
-        return;
-    }
-
-    document.getElementById("start-button").style.visibility = "hidden";
-    document.getElementById("back-button").classList.add("hidden");
-
-    let count = 0;
-
-    const delays = [
-        40, 45, 50, 55, 60,
-        70, 80, 95, 115, 140,
-        170, 205, 245, 290, 340
-    ];
-
-    function showRandomFood() {
-
-        const randomIndex = Math.floor(Math.random() * availableFoods.length);
-        const food = availableFoods[randomIndex];
-        
-        const result = document.getElementById("result");
-        result.innerHTML = "";
-        
-        const image = document.createElement("img");
-      image.src = food.image;
-      image.className = "food-image";
-      image.alt = food.name;
-                
                 const namePlaceholder = document.createElement("div");
                 namePlaceholder.className = "food-name-placeholder";
                 namePlaceholder.textContent = food.name;
-                
+
                 const fireworksPlaceholder = document.createElement("div");
                 fireworksPlaceholder.className = "fireworks-placeholder";
-                
+
                 result.append(image, namePlaceholder, fireworksPlaceholder);
                 count++;
 
                 if (count < 15) {
                     setTimeout(showRandomFood, delays[count - 1]);
                 } else {
-
-                document.getElementById("result").innerHTML =
-                    '<img src="' + food.image + '" class="food-image">' +
-                    '<div class="food-name-row">' +                    
-                        '<div class="fireworks">' +
-                            '<div class="firework left">' +
-                                '<div class="explosion-core"></div>' +
+                    document.getElementById("result").innerHTML =
+                        '<img src="' + food.image + '" class="food-image">' +
+                        '<div class="food-name-row">' +
+                            '<div class="fireworks">' +
+                                '<div class="firework left">' +
+                                    '<div class="explosion-core"></div>' +
                                     '<span class="spark" style="--angle:0deg;--distance:28px;--spark-height:13px;background:#ffd60a;color:#ffd60a"></span>' +
                                     '<span class="spark" style="--angle:30deg;--distance:27px;--spark-height:16px;background:#ff9500;color:#ff9500"></span>' +
                                     '<span class="spark" style="--angle:60deg;--distance:25px;--spark-height:12px;background:#ff3b30;color:#ff3b30"></span>' +
@@ -1480,9 +1476,7 @@ function chooseFood() {
                                     '<span class="spark" style="--angle:330deg;--distance:27px;--spark-height:13px;background:#af52de;color:#af52de"></span>' +
                                 '</div>' +
                             '</div>' +
-                    
                             '<div class="food-name">' + food.name + '</div>' +
-                    
                             '<div class="fireworks">' +
                                 '<div class="firework right">' +
                                     '<div class="explosion-core"></div>' +
@@ -1500,12 +1494,10 @@ function chooseFood() {
                                     '<span class="spark" style="--angle:330deg;--distance:27px;--spark-height:13px;background:#34c759;color:#34c759"></span>' +
                                 '</div>' +
                             '</div>' +
-                    
                         '</div>' +
-                    
                         '<div class="restart-text">再重來一次 !?</div>';
 
-                    setTimeout(function() {
+                    setTimeout(function () {
                         document.getElementById("start-button").style.visibility = "visible";
                         document.querySelector(".restart-text").style.visibility = "visible";
                         document.getElementById("back-button").classList.remove("hidden");
@@ -1515,8 +1507,7 @@ function chooseFood() {
 
             showRandomFood();
         }
-
-</script>
+    </script>
 
 </body>
 </html>
