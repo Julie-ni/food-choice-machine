@@ -1064,6 +1064,50 @@
             SUPABASE_PUBLISHABLE_KEY
         );
 
+        const IMAGE_BUCKET = "meal-images";
+
+        function getPublicImageUrl(imagePath) {
+            const { data } = db.storage
+                .from(IMAGE_BUCKET)
+                .getPublicUrl(imagePath);
+
+            return data.publicUrl;
+        }
+
+        async function uploadFoodImage(file) {
+            const extensionByType = {
+                "image/jpeg": "jpg",
+                "image/png": "png",
+                "image/webp": "webp",
+                "image/gif": "gif"
+            };
+
+            const extension = extensionByType[file.type];
+
+            if (!extension) {
+                throw new Error(
+                    "目前只支援 JPG、PNG、WebP 或 GIF 圖片。"
+                );
+            }
+
+            const imagePath =
+                crypto.randomUUID() + "." + extension;
+
+            const { error } = await db.storage
+                .from(IMAGE_BUCKET)
+                .upload(imagePath, file, {
+                    cacheControl: "3600",
+                    upsert: false,
+                    contentType: file.type
+                });
+
+            if (error) {
+                throw error;
+            }
+
+            return imagePath;
+        }
+
         const FOODS_STORAGE_KEY = "mealSelectorFoodsV2";
 
         function loadFoods() {
