@@ -1563,5 +1563,111 @@
         }
     </script>
 
+<!-- 舊餐點資料備份工具：只讀取資料，不會刪除或修改原資料 -->
+<script>
+(function () {
+    const STORAGE_KEY = "mealSelectorFoodsV2";
+
+    const backupButton = document.createElement("button");
+    backupButton.id = "export-old-foods-backup";
+    backupButton.textContent = "備份舊餐點與圖片";
+
+    backupButton.style.cssText = [
+        "position:fixed",
+        "right:16px",
+        "bottom:20px",
+        "z-index:99999",
+        "padding:14px 18px",
+        "border:0",
+        "border-radius:12px",
+        "background:#2463eb",
+        "color:white",
+        "font-size:16px",
+        "font-weight:bold",
+        "box-shadow:0 3px 12px rgba(0,0,0,.25)",
+        "cursor:pointer"
+    ].join(";");
+
+    backupButton.addEventListener("click", function () {
+        try {
+            // 只讀取原始資料，不修改 localStorage
+            const rawData = localStorage.getItem(STORAGE_KEY);
+
+            if (!rawData) {
+                alert(
+                    "目前這個瀏覽器找不到舊餐點資料。\n" +
+                    "請確認你是在原本存有餐點的 iPhone Safari 上操作。"
+                );
+                return;
+            }
+
+            const foods = JSON.parse(rawData);
+
+            if (!Array.isArray(foods)) {
+                alert(
+                    "資料格式與預期不同，已停止備份。\n" +
+                    "原始資料沒有被修改。"
+                );
+                return;
+            }
+
+            // 確認餐點資料包含在備份中，圖片資料也一併保留
+            const backup = {
+                format: "mealSelectorFoodsV2-backup",
+                exportedAt: new Date().toISOString(),
+                storageKey: STORAGE_KEY,
+                foodCount: foods.length,
+                foods: foods
+            };
+
+            const json = JSON.stringify(backup, null, 2);
+            const blob = new Blob(
+                [json],
+                { type: "application/json;charset=utf-8" }
+            );
+
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+
+            const timestamp = new Date()
+                .toISOString()
+                .replace(/[:.]/g, "-");
+
+            link.href = url;
+            link.download = "meal-backup-" + timestamp + ".json";
+            link.style.display = "none";
+
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+
+            // 延後顯示提示，讓瀏覽器先處理下載動作
+            setTimeout(function () {
+                alert(
+                    "已準備備份檔！\n\n" +
+                    "餐點數量：" + foods.length + "\n" +
+                    "檔案大小：約 " +
+                    (blob.size / 1024 / 1024).toFixed(2) + " MB\n\n" +
+                    "請確認檔案已成功下載並保存到安全的位置。\n" +
+                    "這個操作不會刪除或修改原本的餐點資料。"
+                );
+            }, 800);
+
+            // 保留下載網址一段時間，避免檔案尚未讀取就被釋放
+            setTimeout(function () {
+                URL.revokeObjectURL(url);
+            }, 60000);
+        } catch (error) {
+            alert(
+                "備份時發生錯誤，沒有主動修改原始資料。\n\n" +
+                "錯誤原因：" + error.message
+            );
+        }
+    });
+
+    document.body.appendChild(backupButton);
+})();
+</script>
+
 </body>
 </html>
