@@ -1678,8 +1678,14 @@
 
     const panel = document.createElement("div");
     panel.style.cssText = [
-        "position:relative",
-        "margin:24px auto",
+        "position:fixed",
+        "left:12px",
+        "right:12px",
+        "bottom:100px",
+        "z-index:99999",
+        "max-height:60vh",
+        "overflow:auto",
+        "margin:0 auto",
         "padding:16px",
         "max-width:600px",
         "border:2px solid #d8b08c",
