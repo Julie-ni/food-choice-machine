@@ -1386,32 +1386,86 @@
             }
         }
 
-        function deleteFood(foodId) {
+        async function deleteFood(foodId) {
+            // 1. 找出準備刪除的餐點
             const food = foods.find(function (item) {
                 return item.id === foodId;
             });
 
             if (!food) {
+                alert("找不到這個餐點，請重新整理網頁後再試。");
                 return;
             }
 
-            if (!confirm("確定要刪除「" + food.name + "」嗎？")) {
+            // 2. 確認是否真的要刪除
+            const confirmed = confirm(
+                "確定要刪除「" + food.name + "」嗎？\n\n" +
+                "刪除後，其他裝置也會看不到這道餐點。"
+            );
+
+            if (!confirmed) {
                 return;
             }
 
-            const nextFoods = foods.filter(function (item) {
-                return item.id !== foodId;
-            });
+            try {
+                // 3. 先從 Supabase 資料表刪除餐點
+                const { data, error } = await db
+                    .from("foods")
+                    .delete()
+                    .eq("id", foodId)
+                    .select("id");
 
-            if (!saveFoods(nextFoods)) {
-                return;
+                if (error) {
+                    throw error;
+                }
+
+                // 確認資料確實已刪除
+                if (!data || data.length === 0) {
+                    throw new Error(
+                        "雲端沒有刪除這筆餐點。請檢查 Supabase 的 DELETE 權限。"
+                    );
+                }
+
+                // 4. 更新目前網頁的餐點資料
+                foods = foods.filter(function (item) {
+                    return item.id !== foodId;
+                });
+
+                availableFoods = currentMeal === "total"
+                    ? foods
+                    : foods.filter(function (item) {
+                        return item.meals.includes(currentMeal);
+                    });
+
+                refreshFoodData();
+                renderTotalFoodList();
+
+                // 5. 嘗試刪除 Storage 裡的圖片
+                if (food.image_path) {
+                    const { error: imageError } = await db.storage
+                        .from(IMAGE_BUCKET)
+                        .remove([food.image_path]);
+
+                    if (imageError) {
+                        console.error("刪除餐點圖片失敗：", imageError);
+                        alert(
+                            "餐點已從雲端刪除，但圖片檔案未能刪除。\n" +
+                            "請稍後檢查 Supabase Storage。"
+                        );
+                        return;
+                    }
+                }
+
+                alert("餐點已成功刪除！");
+
+            } catch (error) {
+                console.error("刪除餐點失敗：", error);
+
+                alert(
+                    "刪除餐點失敗，請稍後再試。\n\n" +
+                    (error.message || String(error))
+                );
             }
-
-            foods = nextFoods;
-
-            refreshFoodData();
-
-            renderTotalFoodList();
         }
 
         function refreshFoodData() {
