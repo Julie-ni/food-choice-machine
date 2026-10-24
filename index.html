@@ -750,9 +750,10 @@
         }
 
         #total-list-button {
-            position: absolute;
-            top: 12px;
-            right: 12px;
+            position: fixed;
+            right: 16px;
+            bottom: 20px;
+            z-index: 150;
             padding: 10px 15px;
             border: none;
             border-radius: 18px;
@@ -762,6 +763,35 @@
             font-weight: bold;
             cursor: pointer;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        #settings-button {
+            position: fixed;
+            top: 12px;
+            right: 14px;
+            z-index: 160;
+            width: 42px;
+            height: 42px;
+            border: none;
+            border-radius: 50%;
+            background: transparent;
+            color: #888888;
+            font-size: 30px;
+            line-height: 1;
+            cursor: pointer;
+        }
+
+        #settings-button:hover {
+            background: rgba(0, 0, 0, 0.06);
+        }
+
+        #settings-button:active {
+            background: rgba(0, 0, 0, 0.12);
+        }
+
+        #settings-button:focus-visible {
+            outline: 2px solid #888888;
+            outline-offset: 2px;
         }
 
         #total-list-modal {
@@ -818,6 +848,78 @@
             color: #555;
             font-size: 26px;
             cursor: pointer;
+        }
+
+        #settings-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 100000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        #settings-modal.settings-hidden {
+            display: none;
+        }
+
+        .settings-backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        .settings-box {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 600px;
+            max-height: 80vh;
+            max-height: 80dvh;
+            overflow-y: auto;
+            box-sizing: border-box;
+            padding: 24px 16px;
+            border-radius: 16px;
+            background: #fffaf4;
+            color: #493629;
+            text-align: left;
+        }
+
+        .settings-box h2 {
+            margin-top: 0;
+            padding-right: 36px;
+        }
+
+        .settings-close {
+            position: absolute;
+            top: 10px;
+            right: 12px;
+            width: 36px;
+            height: 36px;
+            border: none;
+            border-radius: 50%;
+            background: #eeeeee;
+            color: #555555;
+            font-size: 26px;
+            cursor: pointer;
+        }
+
+        #settings-tools #export-old-foods-backup {
+            position: static !important;
+            display: block;
+            width: 100%;
+            margin: 12px 0;
+            box-sizing: border-box;
+        }
+
+        #settings-tools #old-food-import-panel {
+            position: static !important;
+            width: 100%;
+            max-width: none;
+            max-height: none;
+            margin: 12px 0;
+            box-sizing: border-box;
         }
 
         #add-food-form {
@@ -915,8 +1017,8 @@
 
         @media (max-width: 600px) {
             #total-list-button {
-                top: 10px;
-                right: 10px;
+                right: 12px;
+                bottom: 16px;
                 padding: 9px 12px;
             }
 
@@ -928,6 +1030,13 @@
 </head>
 
 <body>
+
+    <button id="settings-button"
+        type="button"
+        aria-label="開啟設定"
+        onclick="openSettings()">
+        ⚙
+    </button>
 
     <div id="meal-selector">
         <h2>要吃哪一餐？</h2>
@@ -1049,6 +1158,23 @@
 
             <h3>所有餐點</h3>
             <div id="total-food-list-items"></div>
+        </div>
+    </div>
+
+    <div id="settings-modal" class="settings-hidden">
+        <div class="settings-backdrop" onclick="closeSettings()"></div>
+
+        <div class="settings-box">
+            <button
+                type="button"
+                class="settings-close"
+                onclick="closeSettings()"
+                aria-label="關閉設定"
+            >×</button>
+
+            <h2>⚙️ 設定</h2>
+
+            <div id="settings-tools"></div>
         </div>
     </div>
 
@@ -1203,6 +1329,16 @@
 
                 return false;
             }
+        }
+
+        function openSettings() {
+            document.getElementById("settings-modal")
+                .classList.remove("settings-hidden");
+        }
+
+        function closeSettings() {
+            document.getElementById("settings-modal")
+                .classList.add("settings-hidden");
         }
 
         function openTotalList() {
@@ -1695,10 +1831,10 @@
     backupButton.textContent = "備份舊餐點與圖片";
 
     backupButton.style.cssText = [
-        "position:fixed",
-        "right:16px",
-        "bottom:20px",
-        "z-index:99999",
+        "display:block",
+        "width:100%",
+        "box-sizing:border-box",
+        "margin:12px 0",
         "padding:14px 18px",
         "border:0",
         "border-radius:12px",
@@ -1706,7 +1842,6 @@
         "color:white",
         "font-size:16px",
         "font-weight:bold",
-        "box-shadow:0 3px 12px rgba(0,0,0,.25)",
         "cursor:pointer"
     ].join(";");
 
@@ -1787,7 +1922,8 @@
         }
     });
 
-    document.body.appendChild(backupButton);
+    document.getElementById("settings-tools")
+    .appendChild(backupButton);
 })();
 </script>
 
@@ -1799,24 +1935,24 @@
     const IMAGE_BUCKET = "meal-images";
 
     const panel = document.createElement("div");
-    panel.style.cssText = [
-        "position:fixed",
-        "left:12px",
-        "right:12px",
-        "bottom:100px",
-        "z-index:99999",
-        "max-height:60vh",
-        "overflow:auto",
-        "margin:0 auto",
-        "padding:16px",
-        "max-width:600px",
-        "border:2px solid #d8b08c",
-        "border-radius:12px",
-        "background:#fffaf4",
-        "color:#493629",
-        "font-family:sans-serif",
-        "line-height:1.6"
-    ].join(";");
+panel.id = "old-food-import-panel";
+
+panel.style.cssText = [
+    "position:static",
+    "width:100%",
+    "max-width:none",
+    "max-height:none",
+    "overflow:auto",
+    "box-sizing:border-box",
+    "margin:12px 0",
+    "padding:16px",
+    "border:2px solid #d8b08c",
+    "border-radius:12px",
+    "background:#fffaf4",
+    "color:#493629",
+    "font-family:sans-serif",
+    "line-height:1.6"
+].join(";");
 
     panel.innerHTML = `
         <h3 style="margin-top:0">匯入舊餐點</h3>
@@ -1830,7 +1966,8 @@
         <p id="foodImportStatus" role="status" style="white-space:pre-wrap;overflow-wrap:anywhere"></p>
     `;
 
-    document.body.appendChild(panel);
+    document.getElementById("settings-tools")
+        .appendChild(panel);
 
     const fileInput = panel.querySelector("#foodBackupFile");
     const importButton = panel.querySelector("#importFoodBackup");
