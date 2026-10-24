@@ -1144,9 +1144,41 @@
             }
         }
 
-        let foods = loadFoods();
+        let foods = [];
         let availableFoods = foods;
         let currentMeal = "total";
+
+        async function loadFoodsFromSupabase() {
+            const { data, error } = await db
+                .from("foods")
+                .select("*")
+                .order("created_at", { ascending: true });
+
+            if (error) {
+                console.error("讀取雲端餐點失敗：", error);
+                alert("讀取雲端餐點失敗，請稍後再試。");
+                return;
+            }
+
+            foods = data.map(function (food) {
+                return {
+                    id: food.id,
+                    name: food.name,
+                    meals: food.meals,
+                    image_path: food.image_path,
+                    image: getPublicImageUrl(food.image_path)
+                };
+            });
+
+            availableFoods = currentMeal === "total"
+                ? foods
+                : foods.filter(function (food) {
+                    return food.meals.includes(currentMeal);
+                });
+
+            refreshFoodData();
+            renderTotalFoodList();
+        }
 
         const foodWall = document.getElementById("food-wall");
         const foodListItems = document.getElementById("food-list-items");
@@ -1245,9 +1277,11 @@
             });
         }
 
-        function addFood(event) {
+        async function addFood(event) {
             event.preventDefault();
 
+            const form = document.getElementById("add-food-form");
+            const submitButton = document.getElementById("add-food-button");
             const nameInput = document.getElementById("new-food-name");
             const imageInput = document.getElementById("new-food-image");
 
@@ -1272,10 +1306,10 @@
                 return;
             }
 
-            const MAX_IMAGE_SIZE = 2 * 1024 * 1024; // 2 MB
+            const MAX_IMAGE_SIZE = 2 * 1024 * 1024;
 
             if (file.size > MAX_IMAGE_SIZE) {
-                alert("圖片太大，請選擇小於 2 MB 的圖片。");
+                alert("圖片太大，請選擇不超過 2 MB 的圖片。");
                 return;
             }
 
@@ -1284,41 +1318,72 @@
                 return;
             }
 
-            const reader = new FileReader();
+            submitButton.disabled = true;
+            submitButton.textContent = "新增中，請稍候……";
 
-            reader.onload = function () {
-                if (typeof reader.result !== "string") {
-                    alert("圖片讀取失敗，請重新選擇圖片。");
-                    return;
+            let uploadedImagePath = null;
+
+            try {
+                // 1. 將圖片上傳到 Supabase Storage
+                uploadedImagePath = await uploadFoodImage(file);
+
+                // 2. 將餐點資料寫入 Supabase 資料表
+                const { data, error } = await db
+                    .from("foods")
+                    .insert({
+                        name: name,
+                        meals: selectedMeals,
+                        image_path: uploadedImagePath
+                    })
+                    .select()
+                    .single();
+
+                if (error) {
+                    throw error;
                 }
 
+                // 3. 將雲端資料轉成網站使用的格式
                 const newFood = {
-                    id: crypto.randomUUID(),
-                    name: name,
-                    image: reader.result,
-                    meals: selectedMeals
+                    id: data.id,
+                    name: data.name,
+                    meals: data.meals,
+                    image_path: data.image_path,
+                    image: getPublicImageUrl(data.image_path)
                 };
 
-                const nextFoods = [...foods, newFood];
-
-                if (!saveFoods(nextFoods)) {
-                    return;
-                }
-
-                foods = nextFoods;
+                // 4. 更新畫面上的餐點
+                foods = [...foods, newFood];
                 refreshFoodData();
-
-                document.getElementById("add-food-form").reset();
                 renderTotalFoodList();
 
-                alert("餐點新增成功！");
-            };
+                form.reset();
 
-            reader.onerror = function () {
-                alert("圖片讀取失敗，請重新選擇圖片。");
-            };
+                alert("餐點新增成功！已儲存到共用資料庫。");
 
-            reader.readAsDataURL(file);
+            } catch (error) {
+                console.error("新增餐點失敗：", error);
+
+                // 如果圖片已上傳，但餐點資料寫入失敗，
+                // 嘗試刪除剛才上傳的圖片，避免留下孤立檔案。
+                if (uploadedImagePath) {
+                    const { error: cleanupError } = await db.storage
+                        .from(IMAGE_BUCKET)
+                        .remove([uploadedImagePath]);
+
+                    if (cleanupError) {
+                        console.error("清理未使用的圖片失敗：", cleanupError);
+                    }
+                }
+
+                alert(
+                    "新增餐點失敗，請稍後再試。\n\n" +
+                    (error.message || String(error))
+                );
+
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = "＋ 新增餐點";
+            }
         }
 
         function deleteFood(foodId) {
@@ -1561,6 +1626,9 @@
 
             showRandomFood();
         }
+
+        // 網頁載入時，從 Supabase 讀取共用餐點
+        loadFoodsFromSupabase();
     </script>
 
 <!-- 舊餐點資料備份工具：只讀取資料，不會刪除或修改原資料 -->
