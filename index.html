@@ -473,14 +473,19 @@
             z-index: 1;
             width: 100%;
             max-width: 460px;
-            min-height: calc(100vh - 80px);
-            min-height: calc(100dvh - 80px);
-            margin: 0 auto;
-            padding: 20px 14px 130px;
+            min-height: 0;
+            margin: 20px auto 100px;
+            padding: 20px 14px 24px;
             border-radius: 24px;
             background: rgba(255, 255, 255, 0.55);
             box-shadow: 0 8px 24px rgba(120, 75, 35, 0.08);
             box-sizing: border-box;
+        }
+
+        /* 只有午餐、晚餐頁縮窄卡片 */
+        .main-card.meal-view {
+            width: calc(100% - 20px);
+            max-width: 420px;
         }
 
         #back-button {
@@ -654,8 +659,14 @@
             }
 
             .main-card {
-                padding: 20px 10px 130px;
-                border-radius: 24px;
+                margin: 16px auto 100px;
+                padding: 16px 10px 24px;
+                border-radius: 20px;
+            }
+
+            .main-card.meal-view {
+                width: calc(100% - 20px);
+                max-width: 420px;
             }
         }
 
@@ -833,37 +844,29 @@
         }
 
         .total-search {
+            position: relative;
             display: flex;
             align-items: center;
-            gap: 8px;
             margin-bottom: 16px;
         }
 
-        #total-search-button {
-            flex-shrink: 0;
-            width: 40px;
-            height: 40px;
-            border: none;
-            border-radius: 50%;
-            background: #fff3e5;
-            color: #493629;
-            font-size: 23px;
-            cursor: pointer;
+        .total-search-icon {
+            position: absolute;
+            left: 12px;
+            z-index: 1;
+            font-size: 20px;
+            pointer-events: none;
         }
 
         #total-search-input {
-            flex: 1;
+            width: 100%;
             min-width: 0;
-            padding: 10px 12px;
+            padding: 11px 12px 11px 42px;
             border: 1px solid #ddd;
             border-radius: 10px;
             background: white;
             font-size: 16px;
             box-sizing: border-box;
-        }
-
-        #total-search-input[hidden] {
-            display: none;
         }
 
         .total-list-box h3 {
@@ -1287,12 +1290,7 @@
             <h2>TOTAL LIST</h2>
 
             <div class="total-search">
-                <button
-                    id="total-search-button"
-                    type="button"
-                    aria-label="搜尋餐點"
-                    onclick="toggleTotalSearch()"
-                >&#128269;</button>
+                <span class="total-search-icon" aria-hidden="true">&#128269;</span>
 
                 <input
                     id="total-search-input"
@@ -1301,7 +1299,6 @@
                     aria-label="搜尋餐點名稱"
                     autocomplete="off"
                     oninput="renderTotalFoodList()"
-                    hidden
                 >
             </div>
 
@@ -1614,14 +1611,9 @@
         function toggleTotalSearch() {
             const input = document.getElementById("total-search-input");
 
-            input.hidden = !input.hidden;
-
-            if (input.hidden) {
-                input.value = "";
-                renderTotalFoodList();
-            } else {
-                input.focus();
-            }
+            input.value = "";
+            renderTotalFoodList();
+            input.focus();
         }
 
         let editingFoodId = null;
@@ -1791,8 +1783,14 @@
         }
 
         function closeTotalList() {
+            const searchInput = document.getElementById("total-search-input");
+
+            searchInput.value = "";
+
             document.getElementById("total-list-modal")
                 .classList.add("total-list-hidden");
+
+            renderTotalFoodList();
         }
 
         function renderTotalFoodList() {
@@ -2128,6 +2126,9 @@
 
         function selectMeal(meal) {
             currentMeal = meal;
+            document.querySelector(".main-card").classList.add("meal-view");
+
+            document.getElementById("settings-button").style.display = "none";
 
             document.getElementById("meal-title").textContent =
                 meal === "lunch" ? "午餐吃什麼？" : "晚餐咧？";
@@ -2175,6 +2176,9 @@
         function backToMealSelector() {
             currentMeal = "total";
             availableFoods = foods;
+            document.querySelector(".main-card").classList.remove("meal-view");
+
+            document.getElementById("settings-button").style.display = "";
 
             document.getElementById("meal-selector")
                 .classList.remove("hidden");
