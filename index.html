@@ -1410,7 +1410,7 @@
                     alt="目前餐點照片"
                 >
 
-                <label for="edit-food-image">更換照片（可不更換）</label>
+                <label for="edit-food-image">更換照片</label>
                 <input
                     id="edit-food-image"
                     type="file"
@@ -1418,7 +1418,7 @@
                 >
 
                 <p class="edit-food-hint">
-                    不選新照片，就會保留目前的照片。新照片不可超過 2 MB。
+                    保留目前的圖片 / 新照片不可超過 2 MB。
                 </p>
 
                 <div class="edit-food-meals">
@@ -1756,7 +1756,7 @@
                 renderTotalFoodList();
 
                 closeEditFood();
-                alert("餐點修改成功！其他裝置重新整理後也會看到更新。");
+                alert("餐點修改成功！");
 
             } catch (error) {
                 console.error("修改餐點失敗：", error);
@@ -1965,7 +1965,7 @@
 
                 form.reset();
 
-                alert("餐點新增成功！已儲存到共用資料庫。");
+                alert("餐點新增成功！");
 
             } catch (error) {
                 console.error("新增餐點失敗：", error);
