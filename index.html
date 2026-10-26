@@ -122,13 +122,16 @@
         }
 
         .restart-text {
+            position: relative;
+            top: -45px;
             margin-top: 20px;
+            margin-bottom: -45px;
             font-size: 36px;
             font-weight: bold;
             color: #e53935;
             visibility: hidden;
         }
-
+        
         .food-name-placeholder {
             height: 38px;
         }
@@ -491,7 +494,7 @@
         #back-button {
             position: fixed;
             left: 18px;
-            bottom: 18px;
+            bottom: 31.5px;
             z-index: 30;
             width: 52px;
             height: 52px;
@@ -540,7 +543,7 @@
         #list-button {
             position: fixed;
             right: 18px;
-            bottom: 18px;
+            bottom: 31.5px;
             z-index: 10;
             width: 64px;
             height: 42px;
@@ -940,23 +943,6 @@
             color: #555555;
             font-size: 26px;
             cursor: pointer;
-        }
-
-        #settings-tools #export-old-foods-backup {
-            position: static !important;
-            display: block;
-            width: 100%;
-            margin: 12px 0;
-            box-sizing: border-box;
-        }
-
-        #settings-tools #old-food-import-panel {
-            position: static !important;
-            width: 100%;
-            max-width: none;
-            max-height: none;
-            margin: 12px 0;
-            box-sizing: border-box;
         }
 
         #add-food-form {
@@ -1458,6 +1444,17 @@
         );
 
         const IMAGE_BUCKET = "meal-images";
+        function escapeHTML(value) {
+            return String(value).replace(/[&<>"']/g, function (char) {
+                return {
+                    "&": "&amp;",
+                    "<": "&lt;",
+                    ">": "&gt;",
+                    '"': "&quot;",
+                    "'": "&#39;"
+                }[char];
+            });
+        }
 
         function getPublicImageUrl(imagePath) {
             const { data } = db.storage
@@ -1501,44 +1498,9 @@
             return imagePath;
         }
 
-        const FOODS_STORAGE_KEY = "mealSelectorFoodsV2";
-
-        function loadFoods() {
-            try {
-                const savedFoods = localStorage.getItem(FOODS_STORAGE_KEY);
-
-                if (savedFoods === null) {
-                    return [];
-                }
-
-                const parsedFoods = JSON.parse(savedFoods);
-
-                if (!Array.isArray(parsedFoods)) {
-                    return [];
-                }
-
-                return parsedFoods.filter(function (food) {
-                    return (
-                        food &&
-                        typeof food.id === "string" &&
-                        typeof food.name === "string" &&
-                        typeof food.image === "string" &&
-                        Array.isArray(food.meals) &&
-                        food.meals.length > 0 &&
-                        food.meals.every(function (meal) {
-                            return meal === "lunch" || meal === "dinner";
-                        })
-                    );
-                });
-            } catch (error) {
-                console.error("讀取餐點資料失敗：", error);
-                alert("讀取餐點資料失敗，請檢查瀏覽器儲存空間。");
-                return [];
-            }
-        }
-
         let foods = [];
         let availableFoods = foods;
+        let foodsLoaded = false;
         let currentMeal = "total";
 
         async function loadFoodsFromSupabase() {
@@ -1562,6 +1524,8 @@
                     image: getPublicImageUrl(food.image_path)
                 };
             });
+            foodsLoaded = true;
+            document.getElementById("start-button").disabled = false;
 
             availableFoods = currentMeal === "total"
                 ? foods
@@ -1577,26 +1541,6 @@
         const foodListItems = document.getElementById("food-list-items");
         const totalFoodListItems =
             document.getElementById("total-food-list-items");
-
-        function saveFoods(nextFoods) {
-            try {
-                localStorage.setItem(
-                    FOODS_STORAGE_KEY,
-                    JSON.stringify(nextFoods)
-                );
-
-                return true;
-            } catch (error) {
-                console.error("儲存餐點資料失敗：", error);
-
-                alert(
-                    "儲存失敗！可能是瀏覽器儲存空間不足，" +
-                    "請縮小圖片後再試一次。"
-                );
-
-                return false;
-            }
-        }
 
         function openSettings() {
             document.getElementById("settings-modal")
@@ -1691,8 +1635,15 @@
 
             const MAX_IMAGE_SIZE = 2 * 1024 * 1024;
 
-            if (file && !file.type.startsWith("image/")) {
-                alert("請選擇有效的圖片檔案！");
+            const allowedImageTypes = [
+                "image/jpeg",
+                "image/png",
+                "image/webp",
+                "image/gif"
+            ];
+
+            if (file && !allowedImageTypes.includes(file.type)) {
+                alert("請選擇 JPG、PNG、WebP 或 GIF 圖片！");
                 return;
             }
 
@@ -1705,8 +1656,11 @@
             saveButton.disabled = true;
             saveButton.textContent = "儲存中，請稍候……";
 
+            // 記住舊照片路徑，等新照片更新成功後再刪除
+            const oldImagePath = food.image_path;
             let newImagePath = null;
-
+            let databaseUpdated = false;
+            
             try {
                 // 有選新照片才上傳；沒有選就保留舊照片
                 if (file) {
@@ -1738,6 +1692,8 @@
                     throw new Error("資料庫沒有回傳更新結果。");
                 }
 
+                databaseUpdated = true;
+
                 // 只有資料庫更新成功後，才更新本頁資料
                 food.name = data.name;
                 food.meals = data.meals;
@@ -1747,6 +1703,26 @@
                 refreshFoodData();
                 renderTotalFoodList();
 
+                // 有更換照片，而且舊照片路徑不同，才刪除舊照片
+                if (
+                    newImagePath &&
+                    oldImagePath &&
+                    oldImagePath !== newImagePath
+                ) {
+                    const { error: deleteOldImageError } = await db.storage
+                        .from(IMAGE_BUCKET)
+                        .remove([oldImagePath]);
+
+                    if (deleteOldImageError) {
+                        console.error("刪除舊照片失敗：", deleteOldImageError);
+
+                    alert(
+                        "餐點資料已更新，但舊照片刪除失敗。\n" +
+                        "請到 Supabase Storage 檢查舊照片。"
+                    );
+                }
+            }
+
                 closeEditFood();
                 alert("餐點修改成功！");
 
@@ -1754,7 +1730,7 @@
                 console.error("修改餐點失敗：", error);
 
                 // 若新圖片已上傳但更新資料庫失敗，嘗試清除新圖片
-                if (newImagePath) {
+                if (newImagePath && !databaseUpdated) {
                     const { error: cleanupError } = await db.storage
                         .from(IMAGE_BUCKET)
                         .remove([newImagePath]);
@@ -1795,6 +1771,10 @@
 
         function renderTotalFoodList() {
             totalFoodListItems.innerHTML = "";
+            if (!foodsLoaded) {
+                totalFoodListItems.textContent = "餐點載入中……";
+                return;
+            }
 
             const searchInput = document.getElementById("total-search-input");
 
@@ -1906,8 +1886,15 @@
                 return;
             }
 
-            if (!file || !file.type.startsWith("image/")) {
-                alert("請選擇有效的圖片檔案！");
+            const allowedImageTypes = [
+                "image/jpeg",
+                "image/png",
+                "image/webp",
+                "image/gif"
+            ];
+
+            if (!file || !allowedImageTypes.includes(file.type)) {
+                alert("請選擇 JPG、PNG、WebP 或 GIF 圖片！");
                 return;
             }
 
@@ -1927,6 +1914,7 @@
             submitButton.textContent = "新增中，請稍候……";
 
             let uploadedImagePath = null;
+            let databaseInserted = false;
 
             try {
                 // 1. 將圖片上傳到 Supabase Storage
@@ -1970,7 +1958,7 @@
 
                 // 如果圖片已上傳，但餐點資料寫入失敗，
                 // 嘗試刪除剛才上傳的圖片，避免留下孤立檔案。
-                if (uploadedImagePath) {
+                if (uploadedImagePath && !databaseInserted) {
                     const { error: cleanupError } = await db.storage
                         .from(IMAGE_BUCKET)
                         .remove([uploadedImagePath]);
@@ -2156,6 +2144,11 @@
         function updateFoodWall() {
             foodWall.innerHTML = "";
 
+            if (!foodsLoaded) {
+                alert("餐點資料尚未成功載入，請重新整理網頁後再試。");
+                return;
+            }
+
             if (availableFoods.length === 0) {
                 return;
             }
@@ -2260,7 +2253,7 @@
                                     '<span class="spark" style="--angle:330deg;--distance:27px;--spark-height:13px;background:#af52de;color:#af52de"></span>' +
                                 '</div>' +
                             '</div>' +
-                            '<div class="food-name">' + food.name + '</div>' +
+                            '<div class="food-name">' + escapeHTML(food.name) + '</div>' +
                             '<div class="fireworks">' +
                                 '<div class="firework right">' +
                                     '<div class="explosion-core"></div>' +
@@ -2399,224 +2392,6 @@
 
     document.getElementById("settings-tools")
     .appendChild(backupButton);
-})();
-</script>
-
-<!-- 舊餐點匯入工具：將 JSON 備份中的餐點及照片匯入 Supabase -->
-<script>
-(function () {
-    const SUPABASE_URL = "https://wlcxqgdzlccvxiyzcqqk.supabase.co";
-    const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_9BFWpJVxav_wbQwN8gXqMw_SqnJtspO";
-    const IMAGE_BUCKET = "meal-images";
-
-    const panel = document.createElement("div");
-panel.id = "old-food-import-panel";
-
-panel.style.cssText = [
-    "position:static",
-    "width:100%",
-    "max-width:none",
-    "max-height:none",
-    "overflow:auto",
-    "box-sizing:border-box",
-    "margin:12px 0",
-    "padding:16px",
-    "border:2px solid #d8b08c",
-    "border-radius:12px",
-    "background:#fffaf4",
-    "color:#493629",
-    "font-family:sans-serif",
-    "line-height:1.6"
-].join(";");
-
-    panel.innerHTML = `
-        <h3 style="margin-top:0">匯入舊餐點</h3>
-        <p>選擇之前下載的 meal-backup JSON 備份檔，將舊餐點和照片匯入共用資料庫。</p>
-        <input id="foodBackupFile" type="file" accept=".json,application/json"
-            style="display:block;margin:12px 0;max-width:100%">
-        <button id="importFoodBackup"
-            style="padding:10px 16px;border:0;border-radius:8px;background:#8b5e3c;color:white;cursor:pointer">
-            開始匯入
-        </button>
-        <p id="foodImportStatus" role="status" style="white-space:pre-wrap;overflow-wrap:anywhere"></p>
-    `;
-
-    document.getElementById("settings-tools")
-        .appendChild(panel);
-
-    const fileInput = panel.querySelector("#foodBackupFile");
-    const importButton = panel.querySelector("#importFoodBackup");
-    const status = panel.querySelector("#foodImportStatus");
-
-    function showStatus(message) {
-        status.textContent = message;
-    }
-
-    function imageDataToBlob(dataUrl) {
-        const match = dataUrl.match(/^data:(image\/(?:jpeg|png|webp|gif));base64,([\s\S]+)$/i);
-        if (!match) {
-            throw new Error("備份中有無法辨識的照片格式。");
-        }
-
-        const mime = match[1].toLowerCase();
-        const binary = atob(match[2]);
-        const bytes = new Uint8Array(binary.length);
-
-        for (let i = 0; i < binary.length; i++) {
-            bytes[i] = binary.charCodeAt(i);
-        }
-
-        return { blob: new Blob([bytes], { type: mime }), mime };
-    }
-
-    function getFileExtension(mime) {
-        if (mime === "image/jpeg") return "jpg";
-        if (mime === "image/png") return "png";
-        if (mime === "image/webp") return "webp";
-        if (mime === "image/gif") return "gif";
-        throw new Error("不支援的照片格式：" + mime);
-    }
-
-    importButton.addEventListener("click", async function () {
-        if (importButton.disabled) return;
-
-        const file = fileInput.files && fileInput.files[0];
-
-        if (!file) {
-            showStatus("請先選擇下載資料夾中的 JSON 備份檔。");
-            return;
-        }
-
-        importButton.disabled = true;
-        fileInput.disabled = true;
-
-        const uploadedPaths = [];
-
-        try {
-            showStatus("正在讀取備份檔……");
-
-            const backup = JSON.parse(await file.text());
-
-            if (
-                !backup ||
-                backup.format !== "mealSelectorFoodsV2-backup" ||
-                !Array.isArray(backup.foods) ||
-                backup.foods.length === 0
-            ) {
-                throw new Error("這不是有效的餐點備份檔，或檔案內沒有餐點。");
-            }
-
-            const foods = backup.foods;
-
-            for (const food of foods) {
-                if (
-                    !food ||
-                    typeof food.name !== "string" ||
-                    !food.name.trim() ||
-                    !Array.isArray(food.meals) ||
-                    food.meals.length === 0 ||
-                    !food.meals.every(meal => ["lunch", "dinner"].includes(meal)) ||
-                    typeof food.image !== "string" ||
-                    !food.image.startsWith("data:image/")
-                ) {
-                    throw new Error("備份內有餐點資料不完整，請檢查備份檔。");
-                }
-            }
-
-            showStatus("正在連接 Supabase，檢查資料庫是否為空……");
-
-            if (!window.supabase || !window.supabase.createClient) {
-                throw new Error("找不到 Supabase 程式庫。請確認原本網站的 Supabase CDN 程式碼仍在。");
-            }
-
-            const db = window.supabase.createClient(
-                SUPABASE_URL,
-                SUPABASE_PUBLISHABLE_KEY
-            );
-
-            const { data: existingFoods, error: checkError } =
-                await db.from("foods").select("id").limit(1);
-
-            if (checkError) {
-                throw new Error("無法檢查資料庫：" + checkError.message);
-            }
-
-            if (existingFoods && existingFoods.length > 0) {
-                throw new Error(
-                    "資料庫已經有餐點，為避免重複匯入，程式已停止。沒有匯入新餐點。"
-                );
-            }
-
-            const rows = [];
-
-            for (let i = 0; i < foods.length; i++) {
-                const food = foods[i];
-
-                showStatus(
-                    `正在處理第 ${i + 1} / ${foods.length} 道餐點：${food.name}\n` +
-                    "正在上傳照片，請不要關閉或重新整理頁面。"
-                );
-
-                const converted = imageDataToBlob(food.image);
-                const extension = getFileExtension(converted.mime);
-                const imagePath = `${crypto.randomUUID()}.${extension}`;
-
-                const { error: uploadError } = await db.storage
-                    .from(IMAGE_BUCKET)
-                    .upload(imagePath, converted.blob, {
-                        contentType: converted.mime,
-                        upsert: false
-                    });
-
-                if (uploadError) {
-                    throw new Error(
-                        `第 ${i + 1} 道餐點「${food.name}」的照片上傳失敗：` +
-                        uploadError.message
-                    );
-                }
-
-                uploadedPaths.push(imagePath);
-
-                rows.push({
-                    name: food.name.trim(),
-                    meals: food.meals,
-                    image_path: imagePath
-                });
-            }
-
-            showStatus("照片已上傳，正在將餐點資料寫入資料庫……");
-
-            const { error: insertError } = await db
-                .from("foods")
-                .insert(rows);
-
-            if (insertError) {
-                throw new Error(
-                    "照片已上傳，但餐點資料寫入失敗：" + insertError.message +
-                    "\n請先不要再次匯入，避免留下重複照片。"
-                );
-            }
-
-            showStatus(
-                `匯入成功！共匯入 ${rows.length} 道餐點及其照片。\n` +
-                "請重新整理網站，確認餐點資料是否正常。"
-            );
-
-        } catch (error) {
-            console.error("餐點匯入失敗：", error);
-
-            showStatus(
-                "匯入失敗：\n" +
-                (error && error.message ? error.message : String(error)) +
-                (uploadedPaths.length
-                    ? `\n\n已有 ${uploadedPaths.length} 張照片上傳到儲存空間。請先不要重試，避免留下重複照片。`
-                    : "")
-            );
-        } finally {
-            importButton.disabled = false;
-            fileInput.disabled = false;
-        }
-    });
 })();
 </script>
 
