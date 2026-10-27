@@ -1250,7 +1250,13 @@
 
         <div id="result">手黑黑還是白白！？</div>
 
-        <button id="start-button" onclick="chooseFood()">START !</button>
+        <button
+            id="start-button"
+            disabled
+            onclick="chooseFood()"
+        >
+            START !
+        </button>
 
     </main>
 
@@ -1357,7 +1363,6 @@
 
             <h2>⚙️ 設定</h2>
 
-            <div id="settings-tools"></div>
         </div>
     </div>
 
@@ -1525,7 +1530,6 @@
                 };
             });
             foodsLoaded = true;
-            document.getElementById("start-button").disabled = false;
 
             availableFoods = currentMeal === "total"
                 ? foods
@@ -1535,6 +1539,9 @@
 
             refreshFoodData();
             renderTotalFoodList();
+
+            // 餐點資料載入並更新清單後，啟用 START ! 按鈕
+            document.getElementById("start-button").disabled = false;
         }
 
         const foodWall = document.getElementById("food-wall");
@@ -1935,6 +1942,13 @@
                     throw error;
                 }
 
+                if (!data) {
+                    throw new Error("資料庫沒有回傳新增結果。");
+                }
+
+                // 確認餐點資料已成功寫入 Supabase
+                databaseInserted = true;
+
                 // 3. 將雲端資料轉成網站使用的格式
                 const newFood = {
                     id: data.id,
@@ -2113,6 +2127,11 @@
         }
 
         function selectMeal(meal) {
+            if (!foodsLoaded) {
+                alert("餐點資料尚未載入完成，請稍後再試。");
+                return;
+            }
+
             currentMeal = meal;
             document.querySelector(".main-card").classList.add("meal-view");
 
@@ -2144,12 +2163,7 @@
         function updateFoodWall() {
             foodWall.innerHTML = "";
 
-            if (!foodsLoaded) {
-                alert("餐點資料尚未成功載入，請重新整理網頁後再試。");
-                return;
-            }
-
-            if (availableFoods.length === 0) {
+            if (!foodsLoaded || availableFoods.length === 0) {
                 return;
             }
 
@@ -2192,6 +2206,11 @@
         }
 
         function chooseFood() {
+            if (!foodsLoaded) {
+                alert("餐點資料尚未載入完成，請稍後再試。");
+                return;
+            }
+
             if (availableFoods.length === 0) {
                 alert("目前沒有可抽選的餐點，請先確認 TOTAL LIST。");
                 return;
@@ -2288,112 +2307,6 @@
         // 網頁載入時，從 Supabase 讀取共用餐點
         loadFoodsFromSupabase();
     </script>
-
-<!-- 舊餐點資料備份工具：只讀取資料，不會刪除或修改原資料 -->
-<script>
-(function () {
-    const STORAGE_KEY = "mealSelectorFoodsV2";
-
-    const backupButton = document.createElement("button");
-    backupButton.id = "export-old-foods-backup";
-    backupButton.textContent = "備份舊餐點與圖片";
-
-    backupButton.style.cssText = [
-        "display:block",
-        "width:100%",
-        "box-sizing:border-box",
-        "margin:12px 0",
-        "padding:14px 18px",
-        "border:0",
-        "border-radius:12px",
-        "background:#2463eb",
-        "color:white",
-        "font-size:16px",
-        "font-weight:bold",
-        "cursor:pointer"
-    ].join(";");
-
-    backupButton.addEventListener("click", function () {
-        try {
-            // 只讀取原始資料，不修改 localStorage
-            const rawData = localStorage.getItem(STORAGE_KEY);
-
-            if (!rawData) {
-                alert(
-                    "目前這個瀏覽器找不到舊餐點資料。\n" +
-                    "請確認你是在原本存有餐點的 iPhone Safari 上操作。"
-                );
-                return;
-            }
-
-            const foods = JSON.parse(rawData);
-
-            if (!Array.isArray(foods)) {
-                alert(
-                    "資料格式與預期不同，已停止備份。\n" +
-                    "原始資料沒有被修改。"
-                );
-                return;
-            }
-
-            // 確認餐點資料包含在備份中，圖片資料也一併保留
-            const backup = {
-                format: "mealSelectorFoodsV2-backup",
-                exportedAt: new Date().toISOString(),
-                storageKey: STORAGE_KEY,
-                foodCount: foods.length,
-                foods: foods
-            };
-
-            const json = JSON.stringify(backup, null, 2);
-            const blob = new Blob(
-                [json],
-                { type: "application/json;charset=utf-8" }
-            );
-
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement("a");
-
-            const timestamp = new Date()
-                .toISOString()
-                .replace(/[:.]/g, "-");
-
-            link.href = url;
-            link.download = "meal-backup-" + timestamp + ".json";
-            link.style.display = "none";
-
-            document.body.appendChild(link);
-            link.click();
-            link.remove();
-
-            // 延後顯示提示，讓瀏覽器先處理下載動作
-            setTimeout(function () {
-                alert(
-                    "已準備備份檔！\n\n" +
-                    "餐點數量：" + foods.length + "\n" +
-                    "檔案大小：約 " +
-                    (blob.size / 1024 / 1024).toFixed(2) + " MB\n\n" +
-                    "請確認檔案已成功下載並保存到安全的位置。\n" +
-                    "這個操作不會刪除或修改原本的餐點資料。"
-                );
-            }, 800);
-
-            // 保留下載網址一段時間，避免檔案尚未讀取就被釋放
-            setTimeout(function () {
-                URL.revokeObjectURL(url);
-            }, 60000);
-        } catch (error) {
-            alert(
-                "備份時發生錯誤，沒有主動修改原始資料。\n\n" +
-                "錯誤原因：" + error.message
-            );
-        }
-    });
-
-    document.getElementById("settings-tools")
-    .appendChild(backupButton);
-})();
-</script>
 
 </body>
 </html>
