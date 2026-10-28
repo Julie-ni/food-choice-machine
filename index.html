@@ -1476,11 +1476,20 @@
         }
 
         function getPublicImageUrl(imagePath) {
+            if (!imagePath) {
+                return "";
+            }
+
             const { data } = db.storage
                 .from(IMAGE_BUCKET)
                 .getPublicUrl(imagePath);
 
-            return data.publicUrl;
+            // 避免瀏覽器重複使用相同網址的舊圖片快取
+            const separator = data.publicUrl.includes("?") ? "&" : "?";
+
+            return data.publicUrl +
+                separator +
+                "v=" + encodeURIComponent(imagePath);
         }
 
         async function uploadFoodImage(file) {
@@ -1730,19 +1739,29 @@
                     oldImagePath &&
                     oldImagePath !== newImagePath
                 ) {
-                    const { error: deleteOldImageError } = await db.storage
-                        .from(IMAGE_BUCKET)
-                        .remove([oldImagePath]);
+                    const { data: removedFiles, error: deleteOldImageError } =
+                        await db.storage
+                            .from(IMAGE_BUCKET)
+                            .remove([oldImagePath]);
 
                     if (deleteOldImageError) {
-                        console.error("刪除舊照片失敗：", deleteOldImageError);
+                        console.error("刪除舊照片失敗：", {
+                            oldImagePath: oldImagePath,
+                            error: deleteOldImageError
+                        });
 
-                    alert(
-                        "餐點資料已更新，但舊照片刪除失敗。\n" +
-                        "請到 Supabase Storage 檢查舊照片。"
-                    );
+                        alert(
+                            "餐點資料已更新，但舊照片刪除失敗。\n\n" +
+                            "舊照片路徑：" + oldImagePath + "\n" +
+                            "錯誤訊息：" + deleteOldImageError.message
+                        );
+                    } else {
+                        console.log("舊照片已刪除", {
+                            oldImagePath: oldImagePath,
+                            removedFiles: removedFiles
+                        });
+                    }
                 }
-            }
 
                 closeEditFood();
                 alert("餐點修改成功！");
@@ -1826,6 +1845,9 @@
                 const img = document.createElement("img");
                 img.src = food.image;
                 img.alt = food.name;
+                img.onerror = function () {
+                    handleFoodImageError(img);
+                };
 
                 const info = document.createElement("div");
                 info.className = "total-food-info";
@@ -2203,6 +2225,9 @@
                 img.alt = "";
                 img.className = "wall-food";
                 img.loading = "eager";
+                img.onerror = function () {
+                    handleFoodImageError(img);
+                };
 
                 foodWall.appendChild(img);
             }
@@ -2270,6 +2295,9 @@
                 image.src = food.image;
                 image.className = "food-image";
                 image.alt = food.name;
+                image.onerror = function () {
+                    handleFoodImageError(image);
+                };
 
                 const namePlaceholder = document.createElement("div");
                 namePlaceholder.className = "food-name-placeholder";
@@ -2349,6 +2377,28 @@
 
         // 網頁載入時，從 Supabase 讀取共用餐點
         loadFoodsFromSupabase();
+
+        // 監聽其他裝置對 foods 資料表的新增、修改、刪除
+        const foodsChannel = db
+            .channel("foods-live-sync")
+            .on(
+                "postgres_changes",
+                {
+                    event: "*",
+                    schema: "public",
+                    table: "foods"
+                },
+                function (payload) {
+                    console.log("收到 Supabase 餐點變更：", payload);
+
+                    // 重新讀取最新餐點，更新目前頁面的資料
+                    loadFoodsFromSupabase();
+                }
+            )
+            .subscribe(function (status) {
+                console.log("Supabase Realtime 狀態：", status);
+            });
+
     </script>
 
 </body>
