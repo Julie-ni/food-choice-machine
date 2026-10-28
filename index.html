@@ -72,6 +72,10 @@
                 filter 0.15s ease;
         }
 
+        .main-card.meal-view #start-button {
+            bottom: 24px;
+        }
+
         #start-button::before {
             content: "";
             position: absolute;
@@ -489,6 +493,9 @@
         .main-card.meal-view {
             width: calc(100% - 20px);
             max-width: 420px;
+            padding-bottom: 54px;
+            min-height: 560px;
+            position: relative;
         }
 
         #back-button {
@@ -529,6 +536,12 @@
             stroke-width: 4px;
             stroke-linecap: round;
             stroke-linejoin: round;
+        }
+
+        #back-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
         }
 
         #back-button:active {
@@ -670,6 +683,7 @@
             .main-card.meal-view {
                 width: calc(100% - 20px);
                 max-width: 420px;
+                padding-bottom: 54px;
             }
         }
 
@@ -2122,8 +2136,21 @@
 
             renderFoodList();
 
-            document.getElementById("food-list")
-                .classList.toggle("food-list-hidden");
+            const foodList = document.getElementById("food-list");
+            const backButton = document.getElementById("back-button");
+
+            foodList.classList.toggle("food-list-hidden");
+
+            const isListOpen =
+                !foodList.classList.contains("food-list-hidden");
+
+            if (isListOpen) {
+                // LIST 開啟時隱藏紅色迴車按鈕
+                backButton.classList.add("hidden");
+            } else if (!backButton.disabled) {
+                // LIST 關閉，且目前不是抽選期間，才顯示迴車按鈕
+                backButton.classList.remove("hidden");
+            }
         }
 
         function selectMeal(meal) {
@@ -2156,8 +2183,9 @@
             document.getElementById("meal-selector")
                 .classList.add("hidden");
 
-            document.getElementById("back-button")
-                .classList.remove("hidden");
+            const backButton = document.getElementById("back-button");
+            backButton.classList.add("hidden");
+            backButton.disabled = false;
         }
 
         function updateFoodWall() {
@@ -2216,9 +2244,13 @@
                 return;
             }
 
+            // 抽選期間隱藏 START，但保留迴車按鈕並停用
             document.getElementById("start-button").style.visibility = "hidden";
-            document.getElementById("back-button").classList.add("hidden");
 
+            const backButton = document.getElementById("back-button");
+            backButton.classList.remove("hidden");
+            backButton.disabled = true;
+            
             let count = 0;
 
             const delays = [
@@ -2296,7 +2328,17 @@
                     setTimeout(function () {
                         document.getElementById("start-button").style.visibility = "visible";
                         document.querySelector(".restart-text").style.visibility = "visible";
-                        document.getElementById("back-button").classList.remove("hidden");
+
+                        const backButton = document.getElementById("back-button");
+                        backButton.disabled = false;
+
+                        // 若 LIST 仍開啟，繼續隱藏迴車按鈕
+                        const foodList = document.getElementById("food-list");
+                        if (foodList.classList.contains("food-list-hidden")) {
+                            backButton.classList.remove("hidden");
+                        } else {
+                            backButton.classList.add("hidden");
+                        }
                     }, 1500);
                 }
             }
