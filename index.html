@@ -1492,6 +1492,14 @@
                 "v=" + encodeURIComponent(imagePath);
         }
 
+        function handleFoodImageError(img) {
+            console.warn("餐點圖片載入失敗：", img.src);
+        
+            // 避免錯誤圖片持續觸發 onerror
+            img.onerror = null;
+            img.style.visibility = "hidden";
+        }
+
         async function uploadFoodImage(file) {
             const extensionByType = {
                 "image/jpeg": "jpg",
@@ -1690,6 +1698,7 @@
             const oldImagePath = food.image_path;
             let newImagePath = null;
             let databaseUpdated = false;
+            let oldImageDeleteFailed = false;
             
             try {
                 // 有選新照片才上傳；沒有選就保留舊照片
@@ -1733,38 +1742,81 @@
                 refreshFoodData();
                 renderTotalFoodList();
 
+                // 記錄刪除前的路徑，確認刪除條件是否成立
+                console.log("圖片更換檢查：", {
+                    bucket: IMAGE_BUCKET,
+                    oldImagePath: oldImagePath,
+                    newImagePath: newImagePath,
+                    shouldDeleteOldImage: Boolean(
+                        newImagePath &&
+                        oldImagePath &&
+                        oldImagePath !== newImagePath
+                    )
+                });
+
                 // 有更換照片，而且舊照片路徑不同，才刪除舊照片
                 if (
                     newImagePath &&
                     oldImagePath &&
                     oldImagePath !== newImagePath
                 ) {
-                    const { data: removedFiles, error: deleteOldImageError } =
-                        await db.storage
-                            .from(IMAGE_BUCKET)
-                            .remove([oldImagePath]);
+                    console.log("準備刪除舊照片：", oldImagePath);
 
-                    if (deleteOldImageError) {
-                        console.error("刪除舊照片失敗：", {
+                    try {
+                        const { data: removedFiles, error: deleteOldImageError } =
+                            await db.storage
+                                .from(IMAGE_BUCKET)
+                                .remove([oldImagePath]);
+
+                        if (deleteOldImageError) {
+                            oldImageDeleteFailed = true;
+                            console.error("刪除舊照片失敗：", {
+                                bucket: IMAGE_BUCKET,
+                                oldImagePath: oldImagePath,
+                                message: deleteOldImageError.message,
+                                error: deleteOldImageError
+                            });
+
+                            alert(
+                                "餐點資料已更新，但舊照片刪除失敗。\n\n" +
+                                "舊照片路徑：" + oldImagePath + "\n" +
+                                "錯誤訊息：" + deleteOldImageError.message
+                            );
+                        } else {
+                            console.log("舊照片刪除請求已回應：", {
+                                oldImagePath: oldImagePath,
+                                removedFiles: removedFiles
+                            });
+                        }
+                    } catch (deleteError) {
+                        oldImageDeleteFailed = true;
+                        console.error("刪除舊照片時發生例外：", {
                             oldImagePath: oldImagePath,
-                            error: deleteOldImageError
+                            error: deleteError
                         });
 
                         alert(
-                            "餐點資料已更新，但舊照片刪除失敗。\n\n" +
-                            "舊照片路徑：" + oldImagePath + "\n" +
-                            "錯誤訊息：" + deleteOldImageError.message
+                            "餐點資料已更新，但刪除舊照片時發生錯誤。\n\n" +
+                            (deleteError.message || String(deleteError))
                         );
-                    } else {
-                        console.log("舊照片已刪除", {
-                            oldImagePath: oldImagePath,
-                            removedFiles: removedFiles
-                        });
                     }
+                } else {
+                    console.warn("未執行舊照片刪除，條件不符合：", {
+                        oldImagePath: oldImagePath,
+                        newImagePath: newImagePath
+                    });
                 }
 
                 closeEditFood();
-                alert("餐點修改成功！");
+
+                if (oldImageDeleteFailed) {
+                    alert(
+                        "餐點資料已更新，但舊照片刪除失敗。\n" +
+                        "請查看 Console 的錯誤訊息，並確認 Supabase Storage。"
+                    );
+                } else {
+                    alert("餐點修改成功！");
+                }
 
             } catch (error) {
                 console.error("修改餐點失敗：", error);
