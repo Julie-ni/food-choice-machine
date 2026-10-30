@@ -1698,8 +1698,7 @@
             const oldImagePath = food.image_path;
             let newImagePath = null;
             let databaseUpdated = false;
-            let oldImageDeleteFailed = false;
-            
+
             try {
                 // 有選新照片才上傳；沒有選就保留舊照片
                 if (file) {
@@ -1808,17 +1807,6 @@
                 // 關閉編輯視窗，顯示本次圖片處理結果
                 closeEditFood();
                 alert(imageDeleteResultMessage);
-
-                closeEditFood();
-
-                if (oldImageDeleteFailed) {
-                    alert(
-                        "餐點資料已更新，但舊照片刪除失敗。\n" +
-                        "請查看 Console 的錯誤訊息，並確認 Supabase Storage。"
-                    );
-                } else {
-                    alert("餐點修改成功！");
-                }
 
             } catch (error) {
                 console.error("修改餐點失敗：", error);
