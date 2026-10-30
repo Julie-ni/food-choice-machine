@@ -1782,11 +1782,46 @@
                         } else {
                             console.log("舊照片刪除請求已回應：", removedFiles);
 
-                            imageDeleteResultMessage =
-                                "餐點資料更新成功！\n\n" +
-                                "舊圖片刪除請求已成功回應。\n\n" +
-                                "舊圖片路徑：" + oldImagePath +
-                                "\n\n請再到 Supabase Storage 確認舊檔案是否消失。";
+                            // 再次查詢 Storage，確認舊圖片是否真的消失
+                            const { data: remainingFiles, error: verifyError } =
+                                await db.storage
+                                    .from(IMAGE_BUCKET)
+                                    .list("", {
+                                        search: oldImagePath
+                                    });
+
+                            if (verifyError) {
+                                console.error("確認舊圖片是否存在時發生錯誤：", verifyError);
+
+                                imageDeleteResultMessage =
+                                    "刪除請求已成功回應，但無法確認舊圖片是否消失。\n\n" +
+                                    "舊圖片路徑：" + oldImagePath + "\n\n" +
+                                    "查詢錯誤：" + verifyError.message;
+
+                            } else {
+                                const oldFileStillExists = (remainingFiles || []).some(
+                                    function (file) {
+                                        return file.name === oldImagePath;
+                                    }
+                                );
+
+                                if (oldFileStillExists) {
+                                    console.warn("舊圖片仍然存在：", oldImagePath);
+
+                                    imageDeleteResultMessage =
+                                        "警告：刪除請求已成功回應，但舊圖片仍然存在！\n\n" +
+                                        "舊圖片路徑：" + oldImagePath +
+                                        "\n\n請將這個結果截圖傳給我，繼續檢查 Supabase Storage。";
+
+                                } else {
+                                    console.log("已確認舊圖片不存在：", oldImagePath);
+
+                                    imageDeleteResultMessage =
+                                        "餐點資料更新成功！\n\n" +
+                                        "舊圖片已確認從 Storage 消失。\n\n" +
+                                        "舊圖片路徑：" + oldImagePath;
+                                }
+                            }
                         }
 
                     } catch (deleteError) {
