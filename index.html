@@ -1742,7 +1742,10 @@
                 refreshFoodData();
                 renderTotalFoodList();
 
-                // 記錄刪除前的路徑，確認刪除條件是否成立
+                // 記錄舊圖片刪除結果，最後統一顯示在手機畫面
+                let imageDeleteResultMessage = "";
+
+                // 檢查圖片更換條件
                 console.log("圖片更換檢查：", {
                     bucket: IMAGE_BUCKET,
                     oldImagePath: oldImagePath,
@@ -1760,52 +1763,51 @@
                     oldImagePath &&
                     oldImagePath !== newImagePath
                 ) {
-                    console.log("準備刪除舊照片：", oldImagePath);
-
                     try {
+                        alert("新圖片已更新，現在準備刪除舊圖片……");
+
                         const { data: removedFiles, error: deleteOldImageError } =
                             await db.storage
                                 .from(IMAGE_BUCKET)
                                 .remove([oldImagePath]);
 
                         if (deleteOldImageError) {
-                            oldImageDeleteFailed = true;
-                            console.error("刪除舊照片失敗：", {
-                                bucket: IMAGE_BUCKET,
-                                oldImagePath: oldImagePath,
-                                message: deleteOldImageError.message,
-                                error: deleteOldImageError
-                            });
+                            console.error("刪除舊照片失敗：", deleteOldImageError);
 
-                            alert(
-                                "餐點資料已更新，但舊照片刪除失敗。\n\n" +
-                                "舊照片路徑：" + oldImagePath + "\n" +
-                                "錯誤訊息：" + deleteOldImageError.message
-                            );
+                            imageDeleteResultMessage =
+                                "餐點資料已更新，但舊圖片刪除失敗！\n\n" +
+                                "Bucket：" + IMAGE_BUCKET + "\n" +
+                                "舊圖片路徑：" + oldImagePath + "\n" +
+                                "錯誤訊息：" + deleteOldImageError.message;
+
                         } else {
-                            console.log("舊照片刪除請求已回應：", {
-                                oldImagePath: oldImagePath,
-                                removedFiles: removedFiles
-                            });
-                        }
-                    } catch (deleteError) {
-                        oldImageDeleteFailed = true;
-                        console.error("刪除舊照片時發生例外：", {
-                            oldImagePath: oldImagePath,
-                            error: deleteError
-                        });
+                            console.log("舊照片刪除請求已回應：", removedFiles);
 
-                        alert(
-                            "餐點資料已更新，但刪除舊照片時發生錯誤。\n\n" +
-                            (deleteError.message || String(deleteError))
-                        );
+                            imageDeleteResultMessage =
+                                "餐點資料更新成功！\n\n" +
+                                "舊圖片刪除請求已成功回應。\n\n" +
+                                "舊圖片路徑：" + oldImagePath +
+                                "\n\n請再到 Supabase Storage 確認舊檔案是否消失。";
+                        }
+
+                    } catch (deleteError) {
+                        console.error("刪除舊照片時發生例外：", deleteError);
+
+                        imageDeleteResultMessage =
+                            "餐點資料已更新，但刪除舊圖片時發生錯誤！\n\n" +
+                            (deleteError.message || String(deleteError));
                     }
+
                 } else {
-                    console.warn("未執行舊照片刪除，條件不符合：", {
-                        oldImagePath: oldImagePath,
-                        newImagePath: newImagePath
-                    });
+                    imageDeleteResultMessage =
+                        "餐點資料已更新，但沒有執行舊圖片刪除。\n\n" +
+                        "舊圖片路徑：" + (oldImagePath || "空白") +
+                        "\n新圖片路徑：" + (newImagePath || "空白");
                 }
+
+                // 關閉編輯視窗，顯示本次圖片處理結果
+                closeEditFood();
+                alert(imageDeleteResultMessage);
 
                 closeEditFood();
 
