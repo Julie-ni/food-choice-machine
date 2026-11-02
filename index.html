@@ -1173,6 +1173,47 @@
             margin: 0 auto;
             border-radius: 12px;
             background: #fff3e5;
+            cursor: zoom-in;
+        }
+
+        /* 編輯餐點圖片放大預覽 */
+        #food-image-preview-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            box-sizing: border-box;
+            background: rgba(0, 0, 0, 0.88);
+        }
+
+        #food-image-preview-modal.preview-hidden {
+            display: none;
+        }
+
+        #food-image-preview-modal img {
+            display: block;
+            max-width: 95vw;
+            max-height: 85vh;
+            max-height: 85dvh;
+            object-fit: contain;
+            border-radius: 10px;
+        }
+
+        .food-image-preview-close {
+            position: absolute;
+            top: 18px;
+            right: 20px;
+            width: 42px;
+            height: 42px;
+            border: none;
+            border-radius: 50%;
+            background: white;
+            color: #333;
+            font-size: 30px;
+            cursor: pointer;
         }
 
         .edit-food-hint {
@@ -1406,10 +1447,11 @@
                     required
                 >
 
-                <label>目前照片</label>
+                <label>目前照片（點擊圖片可放大）</label>
                 <img
                     id="edit-food-preview"
-                    alt="目前餐點照片"
+                    alt="目前餐點照片，點擊可放大"
+                    onclick="openFoodImagePreview()"
                 >
 
                 <label for="edit-food-image">更換照片</label>
@@ -1448,6 +1490,25 @@
                 </button>
             </form>
         </div>
+    </div>
+
+    <!-- 餐點圖片放大預覽視窗 -->
+    <div
+        id="food-image-preview-modal"
+        class="preview-hidden"
+        onclick="closeFoodImagePreview()"
+    >
+        <button
+            type="button"
+            class="food-image-preview-close"
+            onclick="closeFoodImagePreview()"
+            aria-label="關閉圖片預覽"
+        >×</button>
+
+        <img
+            id="food-image-preview-large"
+            alt="放大的餐點圖片"
+        >
     </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -1631,6 +1692,28 @@
                 .classList.add("edit-food-hidden");
 
             editingFoodId = null;
+        }
+
+        // 開啟餐點圖片放大預覽
+        function openFoodImagePreview() {
+            const previewImage =
+                document.getElementById("edit-food-preview");
+
+            if (!previewImage.src) {
+                return;
+            }
+
+            document.getElementById("food-image-preview-large").src =
+                previewImage.src;
+
+            document.getElementById("food-image-preview-modal")
+                .classList.remove("preview-hidden");
+        }
+
+        // 關閉餐點圖片放大預覽
+        function closeFoodImagePreview() {
+            document.getElementById("food-image-preview-modal")
+                .classList.add("preview-hidden");
         }
 
         async function saveEditedFood(event) {
