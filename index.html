@@ -1047,6 +1047,7 @@
             border-radius: 10px;
             object-fit: contain;
             background: white;
+            cursor: zoom-in;
         }
 
         .total-food-info {
@@ -1447,11 +1448,10 @@
                     required
                 >
 
-                <label>目前照片（點擊圖片可放大）</label>
+                <label>目前照片</label>
                 <img
                     id="edit-food-preview"
-                    alt="目前餐點照片，點擊可放大"
-                    onclick="openFoodImagePreview()"
+                    alt="目前餐點照片"
                 >
 
                 <label for="edit-food-image">更換照片</label>
@@ -1696,16 +1696,13 @@
         }
 
         // 開啟餐點圖片放大預覽
-        function openFoodImagePreview() {
-            const previewImage =
-                document.getElementById("edit-food-preview");
-
-            if (!previewImage.src) {
+        function openFoodImagePreview(imageSrc) {
+            if (!imageSrc) {
                 return;
             }
 
             document.getElementById("food-image-preview-large").src =
-                previewImage.src;
+                imageSrc;
 
             document.getElementById("food-image-preview-modal")
                 .classList.remove("preview-hidden");
@@ -2006,6 +2003,12 @@
                 const img = document.createElement("img");
                 img.src = food.image;
                 img.alt = food.name;
+
+                // 點擊 TOTAL LIST 餐點圖片時開啟放大預覽
+                img.addEventListener("click", function () {
+                    openFoodImagePreview(food.image);
+                });
+
                 img.onerror = function () {
                     handleFoodImageError(img);
                 };
