@@ -208,7 +208,7 @@
                 0 0 24px rgba(255, 180, 50, 0.9);
             transform: translate(-50%, -50%) scale(0);
             opacity: 0;
-            animation: explosion-core 0.75s ease-out 0.82s forwards;
+            animation: explosion-core 0.75s ease-out 0.9s forwards;
         }
 
         .firework::after {
@@ -273,7 +273,7 @@
             }
 
             100% {
-                bottom: 85px;
+                bottom: var(--flight-bottom, 85px);
                 transform:
                     translateX(-50%)
                     translateX(var(--flight-x));
@@ -380,7 +380,7 @@
                 0 0 7px currentColor;
             animation:
                 firework-explosion 1.35s cubic-bezier(0.12, 0.65, 0.25, 1)
-                0.82s forwards;
+                0.9s forwards;
         }
 
         @keyframes explosion-core {
@@ -2554,6 +2554,46 @@
                             '</div>' +
                         '</div>' +
                         '<div class="restart-text">再重來一次 !?</div>';
+
+                        // 計算左右煙火飛向餐點名稱中央的位置
+                        const foodName = document.querySelector(".food-name");
+                        const fireworks = document.querySelectorAll(".fireworks");
+
+                        if (foodName && fireworks.length === 2) {
+                            const nameRect = foodName.getBoundingClientRect();
+
+                            // 取得餐點名稱中央座標
+                            const targetX = nameRect.left + nameRect.width / 2;
+                            const targetY = nameRect.top + nameRect.height / 2;
+
+                            fireworks.forEach(function (wrapper) {
+                                const firework = wrapper.querySelector(".firework");
+                                const wrapperRect = wrapper.getBoundingClientRect();
+
+                                // 取得煙火發射位置
+                                const startX = wrapperRect.left + wrapperRect.width / 2;
+
+                                // 計算水平飛行距離
+                                const flightX = targetX - startX;
+
+                                // 計算垂直飛行距離
+                                const flightBottom =
+                                    wrapperRect.bottom -
+                                    targetY -
+                                    firework.offsetHeight;
+
+                                // 設定煙火實際飛行終點
+                                firework.style.setProperty(
+                                    "--flight-x",
+                                    flightX + "px"
+                                );
+
+                                firework.style.setProperty(
+                                    "--flight-bottom",
+                                    flightBottom + "px"
+                                );
+                            });
+                        }
 
                     setTimeout(function () {
                         document.getElementById("start-button").style.visibility = "visible";
