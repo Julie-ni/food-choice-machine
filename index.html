@@ -160,6 +160,8 @@
             text-align: center;
             white-space: normal;
             overflow-wrap: anywhere;
+            font-size: clamp(22px, 6vw, 28px);
+            line-height: 1.4;
         }
 
         .fireworks {
@@ -266,7 +268,7 @@
             }
 
             75% {
-                bottom: 75px;
+                bottom: var(--flight-75-bottom, 75px);
                 transform:
                     translateX(-50%)
                     translateX(calc(var(--flight-x) * 0.85));
@@ -2582,6 +2584,9 @@
                                     targetY -
                                     firework.offsetHeight;
 
+                                // 計算 75% 飛行時的垂直位置
+                                const flight75Bottom = flightBottom * 0.85;
+
                                 // 設定煙火實際飛行終點
                                 firework.style.setProperty(
                                     "--flight-x",
@@ -2591,6 +2596,11 @@
                                 firework.style.setProperty(
                                     "--flight-bottom",
                                     flightBottom + "px"
+                                );
+
+                                firework.style.setProperty(
+                                    "--flight-75-bottom",
+                                    flight75Bottom + "px"
                                 );
                             });
                         }
