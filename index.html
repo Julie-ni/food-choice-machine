@@ -247,7 +247,7 @@
             );
             transform:
                 translateX(-50%)
-                rotate(var(--flight-angle, 0deg));
+                rotate(calc(-1 * var(--flight-angle, 0deg)));
             transform-origin: 50% 0%;
             filter: blur(1px);
             box-shadow:
@@ -308,7 +308,7 @@
                 opacity: 0;
                 transform:
                     translateX(-50%)
-                    rotate(var(--flight-angle))
+                    rotate(calc(-1 * var(--flight-angle)))
                     scaleY(0.2);
             }
 
@@ -317,7 +317,7 @@
                 opacity: 1;
                 transform:
                     translateX(-50%)
-                    rotate(var(--flight-angle))
+                    rotate(calc(-1 * var(--flight-angle)))
                     scaleY(0.5);
             }
 
@@ -326,7 +326,7 @@
                 opacity: 0.95;
                 transform:
                     translateX(-50%)
-                    rotate(var(--flight-angle))
+                    rotate(calc(-1 * var(--flight-angle)))
                     scaleY(0.85);
             }
 
@@ -335,7 +335,7 @@
                 opacity: 0.85;
                 transform:
                     translateX(-50%)
-                    rotate(var(--flight-angle))
+                    rotate(calc(-1 * var(--flight-angle)))
                     scaleY(1);
             }
 
@@ -344,7 +344,7 @@
                 opacity: 0.55;
                 transform:
                     translateX(-50%)
-                    rotate(var(--flight-angle))
+                    rotate(calc(-1 * var(--flight-angle)))
                     scaleY(0.85);
             }
 
@@ -353,7 +353,7 @@
                 opacity: 0;
                 transform:
                     translateX(-50%)
-                    rotate(var(--flight-angle))
+                    rotate(calc(-1 * var(--flight-angle)))
                     scaleY(0.35);
                 visibility: hidden;
             }
