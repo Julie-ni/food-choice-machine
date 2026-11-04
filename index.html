@@ -245,7 +245,9 @@
                 rgba(255, 170, 30, 0.55) 70%,
                 rgba(255, 150, 20, 0)
             );
-            transform: translateX(-50%);
+            transform:
+                translateX(-50%)
+                rotate(var(--flight-angle, 0deg));
             transform-origin: 50% 0%;
             filter: blur(1px);
             box-shadow:
@@ -267,16 +269,14 @@
                 bottom: 75px;
                 transform:
                     translateX(-50%)
-                    translateX(calc(var(--flight-x) * 0.85))
-                    rotate(var(--flight-angle));
+                    translateX(calc(var(--flight-x) * 0.85));
             }
 
             100% {
                 bottom: 85px;
                 transform:
                     translateX(-50%)
-                    translateX(var(--flight-x))
-                    rotate(var(--flight-angle));
+                    translateX(var(--flight-x));
             }
         }
 
@@ -306,37 +306,55 @@
             0% {
                 height: 8px;
                 opacity: 0;
-                transform: translateX(-50%) scaleY(0.2);
+                transform:
+                    translateX(-50%)
+                    rotate(var(--flight-angle))
+                    scaleY(0.2);
             }
 
             10% {
                 height: 18px;
                 opacity: 1;
-                transform: translateX(-50%) scaleY(0.5);
+                transform:
+                    translateX(-50%)
+                    rotate(var(--flight-angle))
+                    scaleY(0.5);
             }
 
             35% {
                 height: 30px;
                 opacity: 0.95;
-                transform: translateX(-50%) scaleY(0.85);
+                transform:
+                    translateX(-50%)
+                    rotate(var(--flight-angle))
+                    scaleY(0.85);
             }
 
             60% {
                 height: 38px;
                 opacity: 0.85;
-                transform: translateX(-50%) scaleY(1);
+                transform:
+                    translateX(-50%)
+                    rotate(var(--flight-angle))
+                    scaleY(1);
             }
 
             80% {
                 height: 30px;
                 opacity: 0.55;
-                transform: translateX(-50%) scaleY(0.85);
+                transform:
+                    translateX(-50%)
+                    rotate(var(--flight-angle))
+                    scaleY(0.85);
             }
 
             100% {
                 height: 12px;
                 opacity: 0;
-                transform: translateX(-50%) scaleY(0.35);
+                transform:
+                    translateX(-50%)
+                    rotate(var(--flight-angle))
+                    scaleY(0.35);
                 visibility: hidden;
             }
         }
