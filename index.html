@@ -237,7 +237,7 @@
                 0 0 12px #ffd60a,
                 0 0 20px rgba(255, 180, 50, 0.95);
             transform: translateX(-50%);
-            animation: firework-head-fade 0.9s ease-out forwards;
+            animation: firework-head-fade 1.4s ease-out forwards;
         }
 
         .firework::before {
@@ -2573,10 +2573,16 @@
                     if (foodName && fireworks.length === 2) {
                         const nameRect = foodName.getBoundingClientRect();
 
-                        // 取得餐點名稱左右兩側的爆炸位置
-                        const targetLeftX = nameRect.left - 18;
-                        const targetRightX = nameRect.right + 18;
-                        const targetY = nameRect.top + nameRect.height / 2;
+                        // 取得餐點文字實際顯示寬度，避免使用整個 100% 容器寬度
+                        const textRange = document.createRange();
+                        textRange.selectNodeContents(foodName);
+
+                        const textRect = textRange.getBoundingClientRect();
+
+                        // 以實際文字左右邊界作為爆炸目標
+                        const targetLeftX = textRect.left - 18;
+                        const targetRightX = textRect.right + 18;
+                        const targetY = textRect.top + textRect.height / 2;
 
                         fireworks.forEach(function (wrapper) {
                             const firework = wrapper.querySelector(".firework");
