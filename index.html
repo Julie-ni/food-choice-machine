@@ -154,7 +154,7 @@
         }
 
         .food-name {
-            flex: 1;
+            width: 100%;
             min-width: 0;
             margin-top: 0;
             text-align: center;
@@ -165,12 +165,21 @@
         }
 
         .fireworks {
-            position: relative;
+            position: absolute;
+            bottom: 24px;
             width: 52px;
             height: 120px;
             flex-shrink: 0;
             overflow: visible;
             pointer-events: none;
+        }
+
+        .food-name-row .fireworks:first-child {
+            left: 18px;
+        }
+
+        .food-name-row .fireworks:last-child {
+            right: 18px;
         }
 
         .firework {
@@ -181,7 +190,7 @@
             height: 40px;
             border-radius: 50%;
             transform: translateX(-50%);
-            animation: firework-flight 0.9s cubic-bezier(0.2, 0.8, 0.25, 1) forwards;
+            animation: firework-flight 1.4s cubic-bezier(0.42, 0, 1, 1) forwards;
         }
 
         /* 左側煙火：往右上方飛 */
@@ -210,7 +219,7 @@
                 0 0 24px rgba(255, 180, 50, 0.9);
             transform: translate(-50%, -50%) scale(0);
             opacity: 0;
-            animation: explosion-core 0.75s ease-out 0.9s forwards;
+            animation: explosion-core 0.75s ease-out 1.4s forwards;
         }
 
         .firework::after {
@@ -236,8 +245,8 @@
             position: absolute;
             left: 50%;
             top: 5px;
-            width: 5px;
-            height: 34px;
+            width: 6px;
+            height: 75px;
             border-radius: 50%;
             background: linear-gradient(
                 to bottom,
@@ -255,7 +264,7 @@
             box-shadow:
                 0 0 4px rgba(255, 255, 255, 0.9),
                 0 0 9px rgba(255, 214, 10, 0.7);
-            animation: firework-trail 0.9s ease-out forwards;
+            animation: firework-trail 1.4s ease-out forwards;
         }
 
         @keyframes firework-flight {
@@ -306,7 +315,7 @@
 
         @keyframes firework-trail {
             0% {
-                height: 8px;
+                height: 12px;
                 opacity: 0;
                 transform:
                     translateX(-50%)
@@ -315,7 +324,7 @@
             }
 
             10% {
-                height: 18px;
+                height: 35px;
                 opacity: 1;
                 transform:
                     translateX(-50%)
@@ -324,7 +333,7 @@
             }
 
             35% {
-                height: 30px;
+                height: 55px;
                 opacity: 0.95;
                 transform:
                     translateX(-50%)
@@ -333,7 +342,7 @@
             }
 
             60% {
-                height: 38px;
+                height: 75px;
                 opacity: 0.85;
                 transform:
                     translateX(-50%)
@@ -342,7 +351,7 @@
             }
 
             80% {
-                height: 30px;
+                height: 55px;
                 opacity: 0.55;
                 transform:
                     translateX(-50%)
@@ -351,7 +360,7 @@
             }
 
             100% {
-                height: 12px;
+                height: 15px;
                 opacity: 0;
                 transform:
                     translateX(-50%)
@@ -382,7 +391,7 @@
                 0 0 7px currentColor;
             animation:
                 firework-explosion 1.35s cubic-bezier(0.12, 0.65, 0.25, 1)
-                0.9s forwards;
+                1.4s forwards;
         }
 
         @keyframes explosion-core {
@@ -2564,8 +2573,9 @@
                     if (foodName && fireworks.length === 2) {
                         const nameRect = foodName.getBoundingClientRect();
 
-                        // 取得餐點名稱中央座標
-                        const targetX = nameRect.left + nameRect.width / 2;
+                        // 取得餐點名稱左右兩側的爆炸位置
+                        const targetLeftX = nameRect.left - 18;
+                        const targetRightX = nameRect.right + 18;
                         const targetY = nameRect.top + nameRect.height / 2;
 
                         fireworks.forEach(function (wrapper) {
@@ -2575,7 +2585,11 @@
                             // 取得煙火發射位置
                             const startX = wrapperRect.left + wrapperRect.width / 2;
 
-                            // 計算水平飛行距離
+                            // 左側煙火飛向文字左側，右側煙火飛向文字右側
+                            const targetX = firework.classList.contains("left")
+                                ? targetLeftX
+                                : targetRightX;
+
                             const flightX = targetX - startX;
 
                             // 計算垂直飛行距離
