@@ -245,25 +245,25 @@
             position: absolute;
             left: 50%;
             top: 5px;
-            width: 6px;
-            height: 75px;
+            width: 3px;
+            height: 38px;
             border-radius: 50%;
             background: linear-gradient(
                 to bottom,
-                rgba(255, 255, 255, 1),
-                rgba(255, 255, 255, 0.95) 15%,
-                rgba(255, 214, 10, 0.9) 40%,
-                rgba(255, 170, 30, 0.55) 70%,
+                rgba(255, 255, 255, 0.95),
+                rgba(255, 255, 255, 0.8) 15%,
+                rgba(255, 214, 10, 0.65) 40%,
+                rgba(255, 170, 30, 0.3) 70%,
                 rgba(255, 150, 20, 0)
             );
             transform:
                 translateX(-50%)
                 rotate(var(--flight-angle, 0deg));
             transform-origin: 50% 0%;
-            filter: blur(1px);
+            filter: blur(0.7px);
             box-shadow:
-                0 0 4px rgba(255, 255, 255, 0.9),
-                0 0 9px rgba(255, 214, 10, 0.7);
+                0 0 3px rgba(255, 255, 255, 0.7),
+                0 0 5px rgba(255, 214, 10, 0.45);
             animation: firework-trail 1.4s ease-out forwards;
         }
 
@@ -315,7 +315,7 @@
 
         @keyframes firework-trail {
             0% {
-                height: 12px;
+                height: 8px;
                 opacity: 0;
                 transform:
                     translateX(-50%)
@@ -324,8 +324,8 @@
             }
 
             10% {
-                height: 35px;
-                opacity: 1;
+                height: 18px;
+                opacity: 0.85;
                 transform:
                     translateX(-50%)
                     rotate(var(--flight-angle))
@@ -333,8 +333,8 @@
             }
 
             35% {
-                height: 55px;
-                opacity: 0.95;
+                height: 28px;
+                opacity: 0.8;
                 transform:
                     translateX(-50%)
                     rotate(var(--flight-angle))
@@ -342,8 +342,8 @@
             }
 
             60% {
-                height: 75px;
-                opacity: 0.85;
+                height: 38px;
+                opacity: 0.7;
                 transform:
                     translateX(-50%)
                     rotate(var(--flight-angle))
@@ -351,8 +351,8 @@
             }
 
             80% {
-                height: 55px;
-                opacity: 0.55;
+                height: 28px;
+                opacity: 0.4;
                 transform:
                     translateX(-50%)
                     rotate(var(--flight-angle))
@@ -360,7 +360,7 @@
             }
 
             100% {
-                height: 15px;
+                height: 8px;
                 opacity: 0;
                 transform:
                     translateX(-50%)
@@ -374,7 +374,7 @@
             position: absolute;
             left: 50%;
             top: 0;
-            width: 5px;
+            width: 3px;
             height: var(--spark-height);
             clip-path: polygon(
                 20% 0%,
@@ -385,10 +385,11 @@
             );
             transform-origin: 50% 0%;
             opacity: 0;
-            filter: blur(0.2px);
+            filter: blur(0.15px);
             box-shadow:
-                0 0 3px currentColor,
-                0 0 7px currentColor;
+                0 0 4px currentColor,
+                0 0 9px currentColor,
+                0 0 14px currentColor;
             animation:
                 firework-explosion 1.35s cubic-bezier(0.12, 0.65, 0.25, 1)
                 1.4s forwards;
@@ -443,38 +444,38 @@
             }
 
             55% {
-                opacity: 0.75;
+                opacity: 0.8;
 
                 transform:
                     translate(-50%, -50%)
                     rotate(var(--angle))
-                    translateY(calc(-1 * (var(--distance) + 10px)))
-                    scaleY(0.75);
+                    translateY(calc(-1 * (var(--distance) + 18px)))
+                    scaleY(0.9);
             }
 
             75% {
-                opacity: 0.35;
-
-                transform:
-                    translate(-50%, -50%)
-                    rotate(var(--angle))
-                    translateY(calc(-1 * (var(--distance) + 22px)))
-                    scaleY(0.45);
-            }
-
-            92% {
-                opacity: 0.08;
-            }
-
-            100% {
-                opacity: 0;
-                visibility: hidden;
+                opacity: 0.4;
 
                 transform:
                     translate(-50%, -50%)
                     rotate(var(--angle))
                     translateY(calc(-1 * (var(--distance) + 35px)))
-                    scaleY(0.1);
+                    scaleY(0.65);
+            }
+
+            92% {
+                opacity: 0.1;
+            }
+
+            100% {
+                opacity: 0;
+                visibility: hidden;
+        
+                transform:
+                    translate(-50%, -50%)
+                    rotate(var(--angle))
+                    translateY(calc(-1 * (var(--distance) + 50px)))
+                    scaleY(0.2);
             }
         }
 
