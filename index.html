@@ -2591,6 +2591,51 @@
                         '</div>' +
                         '<div class="restart-text">再重來一次 !?</div>';
 
+                    // 隨機設定煙火火花的長度、擴散距離及顏色
+                                        const sparkColors = [
+                                            "#ffffff", // 白色
+                                            "#ffd60a", // 黃色
+                                            "#ff9500", // 橘色
+                                            "#ff3b30", // 紅色
+                                            "#ff2d55", // 粉紅色
+                                            "#af52de", // 紫色
+                                            "#5ac8fa", // 淺藍色
+                                            "#00d4ff", // 藍色
+                                            "#34c759"  // 綠色
+                                        ];
+
+                                        document.querySelectorAll(".firework .spark").forEach(function (spark) {
+
+                                            // 隨機火花長度：短、中、長交錯出現
+                                            const sparkHeight =
+                                                Math.floor(Math.random() * 56) + 22;
+
+                                            // 隨機火花擴散距離
+                                            const sparkDistance =
+                                                Math.floor(Math.random() * 71) + 65;
+
+                                            // 隨機選擇火花顏色
+                                            const randomColor =
+                                                sparkColors[
+                                                    Math.floor(Math.random() * sparkColors.length)
+                                                ];
+
+                                            // 更新火花尺寸
+                                            spark.style.setProperty(
+                                                "--spark-height",
+                                                sparkHeight + "px"
+                                            );
+
+                                            spark.style.setProperty(
+                                                "--distance",
+                                                sparkDistance + "px"
+                                            );
+
+                                            // 更新火花顏色及光暈顏色
+                                            spark.style.background = randomColor;
+                                            spark.style.color = randomColor;
+                                        });
+
                     // 計算左右煙火飛向餐點名稱中央的位置
                     const foodName = document.querySelector(".food-name");
                     const fireworks = document.querySelectorAll(".fireworks");
