@@ -376,7 +376,7 @@
             position: absolute;
             left: 50%;
             top: 0;
-            width: 3px;
+            width: 2px;
             height: var(--spark-height);
             clip-path: polygon(
                 20% 0%,
@@ -2606,15 +2606,45 @@
                         "#34c759"  // 綠色
                     ];
 
+                    // 將每側原本 24 條火花增加至 72 條
+                    document.querySelectorAll(".firework").forEach(function (firework) {
+
+                        // 先取得原本的 24 條火花
+                        const originalSparks =
+                            Array.from(firework.querySelectorAll(".spark"));
+
+                        originalSparks.forEach(function (spark) {
+
+                            // 每條原始火花額外複製兩條
+                            const baseAngle = parseFloat(
+                                spark.style.getPropertyValue("--angle")
+                            );
+
+                            [5, 10].forEach(function (offset) {
+
+                                const extraSpark = spark.cloneNode(true);
+
+                                // 讓火花角度交錯，形成每 5 度一條的放射效果
+                                extraSpark.style.setProperty(
+                                    "--angle",
+                                    (baseAngle + offset) + "deg"
+                                );
+
+                                firework.appendChild(extraSpark);
+                            });
+                        });
+                    });
+
+                    // 為全部 144 條火花隨機設定尺寸、距離及顏色
                     document.querySelectorAll(".firework .spark").forEach(function (spark) {
 
-                        // 隨機火花長度：短、中、長交錯出現
+                        // 隨機火花長度：35–105px
                         const sparkHeight =
-                            Math.floor(Math.random() * 56) + 22;
+                            Math.floor(Math.random() * 71) + 35;
 
-                        // 隨機火花擴散距離
+                        // 隨機火花擴散距離：85–180px
                         const sparkDistance =
-                            Math.floor(Math.random() * 71) + 65;
+                            Math.floor(Math.random() * 96) + 85;
 
                         // 隨機選擇火花顏色
                         const randomColor =
