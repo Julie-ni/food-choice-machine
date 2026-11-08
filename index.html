@@ -280,14 +280,16 @@
                 bottom: var(--flight-75-bottom, 75px);
                 transform:
                     translateX(-50%)
-                    translateX(calc(var(--flight-x) * 0.85));
+                    translateX(calc(var(--flight-x) * 0.85))
+                    rotate(0deg);
             }
 
             100% {
                 bottom: var(--flight-bottom, 85px);
                 transform:
                     translateX(-50%)
-                    translateX(var(--flight-x));
+                    translateX(var(--flight-x))
+                    rotate(0deg);
             }
         }
 
