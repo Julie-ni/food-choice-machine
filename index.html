@@ -193,16 +193,16 @@
             animation: firework-flight 1.4s cubic-bezier(0.42, 0, 1, 1) forwards;
         }
 
-        /* 左側煙火：往右上方飛 */
+        /* 左側煙火：幾乎垂直上升，稍微往右偏 7 度 */
         .firework.left {
-            --flight-x: 120px;
-            --flight-angle: 35deg;
+            --flight-x: 0px;
+            --flight-angle: 7deg;
         }
 
-        /* 右側煙火：往左上方飛 */
+        /* 右側煙火：幾乎垂直上升，稍微往左偏 7 度 */
         .firework.right {
-            --flight-x: -120px;
-            --flight-angle: -35deg;
+            --flight-x: 0px;
+            --flight-angle: -7deg;
         }
 
         .explosion-core {
@@ -2648,30 +2648,28 @@
 
                         const textRect = textRange.getBoundingClientRect();
 
-                        // 以實際文字左右邊界作為爆炸目標
-                        const targetLeftX = textRect.left - 18;
-                        const targetRightX = textRect.right + 18;
+                        // 計算食物名稱中心的垂直位置
                         const targetY = textRect.top + textRect.height / 2;
 
                         fireworks.forEach(function (wrapper) {
                             const firework = wrapper.querySelector(".firework");
                             const wrapperRect = wrapper.getBoundingClientRect();
 
-                            // 取得煙火發射位置
-                            const startX = wrapperRect.left + wrapperRect.width / 2;
-
-                            // 左側煙火飛向文字左側，右側煙火飛向文字右側
-                            const targetX = firework.classList.contains("left")
-                                ? targetLeftX
-                                : targetRightX;
-
-                            const flightX = targetX - startX;
-
                             // 計算垂直飛行距離
                             const flightBottom =
                                 wrapperRect.bottom -
                                 targetY -
                                 firework.offsetHeight;
+
+                            // 設定煙火朝向中心偏移 7 度
+                            const flightAngle = 7 * Math.PI / 180;
+
+                            // 左側往右偏，右側往左偏
+                            const direction = firework.classList.contains("left") ? 1 : -1;
+
+                            // 根據垂直上升距離計算水平位移
+                            const flightX =
+                                direction * flightBottom * Math.tan(flightAngle);
 
                             // 計算 75% 飛行時的垂直位置
                             const flight75Bottom = flightBottom * 0.85;
