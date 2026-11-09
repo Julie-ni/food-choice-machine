@@ -209,21 +209,29 @@
             position: absolute;
             left: 50%;
             top: 0;
-            width: 10px;
-            height: 10px;
+
+            /* 放大中心亮點 */
+            width: 18px;
+            height: 18px;
             border-radius: 50%;
+
+            /* 確保中心亮點顯示在火花上方 */
+            z-index: 10;
 
             /* 使用該朵煙火隨機選出的中心色彩 */
             background: var(--burst-core-color, #ffffff);
 
+            /* 加強中心亮點的發光效果 */
             box-shadow:
-                0 0 6px var(--burst-core-color, #ffffff),
-                0 0 14px var(--burst-core-color, #ffffff),
-                0 0 24px var(--burst-core-color, #ffffff);
+                0 0 5px 2px var(--burst-core-color, #ffffff),
+                0 0 12px 5px var(--burst-core-color, #ffffff),
+                0 0 25px 10px var(--burst-core-color, #ffffff),
+                0 0 40px 15px var(--burst-core-color, #ffffff);
 
             transform: translate(-50%, -50%) scale(0);
             opacity: 0;
-            animation: explosion-core 1s ease-out 1.8s forwards;
+
+            animation: explosion-core 1.2s ease-out 1.8s forwards;
         }
 
         .firework::after {
@@ -421,20 +429,28 @@
                 transform: translate(-50%, -50%) scale(0);
             }
 
-            20% {
+            /* 煙火綻放瞬間，中心快速閃亮 */
+            15% {
                 opacity: 1;
-                transform: translate(-50%, -50%) scale(1.8);
+                transform: translate(-50%, -50%) scale(2.5);
             }
 
-            55% {
-                opacity: 0.8;
-                transform: translate(-50%, -50%) scale(1);
+                /* 保持中心亮度 */
+                35% {
+                    opacity: 1;
+                    transform: translate(-50%, -50%) scale(1.8);
+                }
+
+            /* 逐漸淡出 */
+            65% {
+                opacity: 0.65;
+                transform: translate(-50%, -50%) scale(1.2);
             }
 
             100% {
                 opacity: 0;
                 visibility: hidden;
-                transform: translate(-50%, -50%) scale(0);
+                transform: translate(-50%, -50%) scale(0.5);
             }
         }
 
@@ -2618,27 +2634,27 @@
                         {
                             name: "gold",
                             colors: ["#fff9d6", "#ffe680", "#ffd60a", "#ffb000", "#ff9500"],
-                            core: "#fff4c2"
+                            core: "#ffd60a"
                         },
                         {
                             name: "blue",
                             colors: ["#e6f7ff", "#a5e4ff", "#5ac8fa", "#008cff", "#245bff"],
-                            core: "#e6f7ff"
+                            core: "#5ac8fa"
                         },
                         {
                             name: "red",
                             colors: ["#ffe5e5", "#ffaaaa", "#ff5c5c", "#ff3030", "#c90035"],
-                            core: "#fff0e8"
+                            core: "#ff5c5c"
                         },
                         {
                             name: "green",
                             colors: ["#eaffdf", "#b8ff9b", "#68e66b", "#20c96b", "#008f50"],
-                            core: "#efffe8"
+                            core: "#68e66b"
                         },
                         {
                             name: "purple",
                             colors: ["#f7e6ff", "#e0b3ff", "#c77dff", "#9b5de5", "#6930c3"],
-                            core: "#fff0ff"
+                            core: "#c77dff"
                         },
                         {
                             name: "white",
@@ -2647,7 +2663,7 @@
                         }
                     ];
 
-                    // 將每側原本 24 條火花增加至 72 條
+                    // 將每側原本 24 條火花增加至 144 條
                     document.querySelectorAll(".firework").forEach(function (firework) {
 
                         const originalSparks =
@@ -2659,7 +2675,9 @@
                                 spark.style.getPropertyValue("--angle")
                             );
 
-                            [5, 10].forEach(function (offset) {
+                            // 每條原始火花額外複製五條
+                            // 每隔 2.5 度增加一條火花
+                            [2.5, 5, 7.5, 10, 12.5].forEach(function (offset) {
 
                                 const extraSpark = spark.cloneNode(true);
 
