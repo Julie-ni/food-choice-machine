@@ -383,9 +383,65 @@
             position: absolute;
             left: 50%;
             top: 0;
+
             width: 2px;
             height: var(--spark-height);
-        
+
+            /* 以中心為旋轉及放射起點 */
+            transform-origin: 50% 0%;
+
+            opacity: 0;
+
+            /* 花火本體不直接繪製背景，交給兩個偽元素 */
+            background: transparent;
+
+            /* 保留原本的放射動畫 */
+            animation:
+                firework-explosion 2.4s cubic-bezier(0.12, 0.65, 0.25, 1)
+                1.8s forwards;
+        }
+
+
+        /* 外層：柔和煙霧與光暈 */
+        .spark::before {
+            content: "";
+            position: absolute;
+
+            /* 比花火本體寬，形成周圍的柔光 */
+            left: -4px;
+            top: 0;
+
+            width: 10px;
+            height: 100%;
+
+            background: var(--spark-gradient);
+
+            border-radius: 50%;
+
+            /* 模糊形成煙霧感 */
+            filter: blur(3.5px);
+
+            opacity: 0.4;
+
+            transform: scaleY(1.02);
+
+            pointer-events: none;
+        }
+
+
+        /* 內層：保留原本細長、尖端的花火線條 */
+        .spark::after {
+            content: "";
+            position: absolute;
+
+            left: 0;
+            top: 0;
+
+            width: 100%;
+            height: 100%;
+
+            background: var(--spark-gradient);
+
             clip-path: polygon(
                 20% 0%,
                 80% 0%,
@@ -394,28 +450,14 @@
                 38% 55%
             );
 
-            transform-origin: 50% 0%;
-            opacity: 0;
-
-            /* 中心端明亮，外側逐漸變暗 */
-            background: linear-gradient(
-                to bottom,
-                #ffffff 0%,
-                var(--spark-color) 22%,
-                var(--spark-color) 48%,
-                transparent 100%
-            );
-
-            filter: blur(0.15px);
+            filter: blur(0.35px);
 
             box-shadow:
                 0 0 3px currentColor,
                 0 0 6px currentColor,
                 0 0 10px currentColor;
 
-            animation:
-                firework-explosion 2.4s cubic-bezier(0.12, 0.65, 0.25, 1)
-                1.8s forwards;
+            pointer-events: none;
         }
 
         @keyframes explosion-core {
@@ -2732,12 +2774,15 @@
                             spark.style.color = randomColor;
 
                             // 中心白亮，往外逐漸淡出
-                            spark.style.background =
+                            // 將漸層提供給花火本體及外層煙霧共同使用
+                            spark.style.setProperty(
+                                "--spark-gradient",
                                 "linear-gradient(to bottom, " +
                                 "#ffffff 0%, " +
                                 "var(--spark-color) 22%, " +
                                 "var(--spark-color) 48%, " +
-                                "transparent 100%)";
+                                "transparent 100%)"
+                            );
                         });
                     });
 
@@ -2776,8 +2821,9 @@
                             const flightX =
                                 direction * flightBottom * Math.tan(flightAngle);
 
-                            // 計算 75% 飛行時的垂直位置
-                            const flight75Bottom = flightBottom * 0.85;
+                            // 計算 75% 飛行時的水平與垂直位置
+                            const flight75Bottom = flightBottom * 0.75;
+                            const flight75X = flightX * 0.75;
 
                             // 設定煙火實際飛行終點
                             firework.style.setProperty(
@@ -2787,7 +2833,7 @@
 
                             firework.style.setProperty(
                                 "--flight-x-75",
-                                (flightX * 0.85) + "px"
+                                flight75X + "px"
                             );
 
                             firework.style.setProperty(
@@ -2797,7 +2843,7 @@
 
                             firework.style.setProperty(
                                 "--flight-75-bottom",
-                                (flightBottom * 0.75) + "px"
+                                flight75Bottom + "px"
                             );
                         });
                     }
