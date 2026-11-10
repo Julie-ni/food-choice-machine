@@ -2734,19 +2734,25 @@
                                 Math.floor(Math.random() * sparkColorSchemes.length)
                             ];
 
+                        // 這朵煙火只隨機選擇一個主色
+                        const colors = selectedScheme.colors;
+
+                        const selectedColor =
+                            colors[Math.floor(Math.random() * colors.length)];
+
+                        // 使用色系最淺的顏色作為中心亮部
+                        const highlightColor = colors[0];
+
                         // 設定這朵煙火的中心顏色
                         firework.style.setProperty(
                             "--burst-core-color",
                             selectedScheme.core
                         );
 
-                        // 同一朵煙火的所有火花使用同一色系
+                        // 同一朵煙火的所有火花使用相同主色
                         firework.querySelectorAll(".spark").forEach(function (spark) {
 
-                            const colors = selectedScheme.colors;
-
-                            const randomColor =
-                                colors[Math.floor(Math.random() * colors.length)];
+                            const randomColor = selectedColor;
 
                             // 隨機火花長度：35–105px
                             const sparkHeight =
@@ -2774,9 +2780,7 @@
 
                             spark.style.color = randomColor;
 
-                            // 使用同一色系最淺的顏色作為亮部
-                            const highlightColor = colors[0];
-
+                            // 使用這朵煙火共用的最淺色作為亮部
                             spark.style.setProperty(
                                 "--spark-highlight-color",
                                 highlightColor
