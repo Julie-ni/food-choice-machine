@@ -2774,12 +2774,20 @@
 
                             spark.style.color = randomColor;
 
-                            // 中心白亮，往外逐漸淡出
+                            // 使用同一色系最淺的顏色作為亮部
+                            const highlightColor = colors[0];
+
+                            spark.style.setProperty(
+                                "--spark-highlight-color",
+                                highlightColor
+                            );
+
+                            // 中心亮部與外圍火花使用相同色系
                             // 將漸層提供給花火本體及外層煙霧共同使用
                             spark.style.setProperty(
                                 "--spark-gradient",
                                 "linear-gradient(to bottom, " +
-                                "#ffffff 0%, " +
+                                "var(--spark-highlight-color) 0%, " +
                                 "var(--spark-color) 22%, " +
                                 "var(--spark-color) 48%, " +
                                 "transparent 100%)"
