@@ -2734,13 +2734,14 @@
                                 Math.floor(Math.random() * sparkColorSchemes.length)
                             ];
 
-                        // 這朵煙火只隨機選擇一個主色
+                        // 取得這朵煙火所選色系的顏色
                         const colors = selectedScheme.colors;
 
+                        // 整朵煙火只隨機選擇一次主色
                         const selectedColor =
                             colors[Math.floor(Math.random() * colors.length)];
 
-                        // 使用色系最淺的顏色作為中心亮部
+                        // 使用該色系最淺的顏色作為亮部
                         const highlightColor = colors[0];
 
                         // 設定這朵煙火的中心顏色
@@ -2749,16 +2750,14 @@
                             selectedScheme.core
                         );
 
-                        // 同一朵煙火的所有火花使用相同主色
+                        // 同一朵煙火的所有火花共用相同主色
                         firework.querySelectorAll(".spark").forEach(function (spark) {
 
-                            const randomColor = selectedColor;
-
-                            // 隨機火花長度：35–105px
+                            // 每條火花仍然保留獨立的長度變化
                             const sparkHeight =
                                 Math.floor(Math.random() * 71) + 35;
 
-                            // 隨機擴散距離：85–180px
+                            // 每條火花仍然保留獨立的擴散距離
                             const sparkDistance =
                                 Math.floor(Math.random() * 96) + 85;
 
@@ -2772,22 +2771,21 @@
                                 sparkDistance + "px"
                             );
 
-                            // 設定火花顏色
+                            // 所有火花使用同一個主色
                             spark.style.setProperty(
                                 "--spark-color",
-                                randomColor
+                                selectedColor
                             );
 
-                            spark.style.color = randomColor;
+                            spark.style.color = selectedColor;
 
-                            // 使用這朵煙火共用的最淺色作為亮部
+                            // 所有火花使用同一個色系的亮部
                             spark.style.setProperty(
                                 "--spark-highlight-color",
                                 highlightColor
                             );
 
-                            // 中心亮部與外圍火花使用相同色系
-                            // 將漸層提供給花火本體及外層煙霧共同使用
+                            // 花火本體及外層煙霧共用相同漸層
                             spark.style.setProperty(
                                 "--spark-gradient",
                                 "linear-gradient(to bottom, " +
