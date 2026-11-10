@@ -291,7 +291,7 @@
 
             75% {
                 transform: translate3d(
-                    calc(-50% + var(--flight-x) * 0.85),
+                    calc(-50% + var(--flight-x-75, 0px)),
                     calc(-1 * var(--flight-75-bottom, 75px)),
                     0
                 );
@@ -430,11 +430,11 @@
                 transform: translate(-50%, -50%) scale(2.5);
             }
 
-                /* 保持中心亮度 */
-                35% {
-                    opacity: 1;
-                    transform: translate(-50%, -50%) scale(1.8);
-                }
+            /* 保持中心亮度 */
+            35% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1.8);
+            }
 
             /* 逐漸淡出 */
             65% {
@@ -2786,13 +2786,18 @@
                             );
 
                             firework.style.setProperty(
+                                "--flight-x-75",
+                                (flightX * 0.85) + "px"
+                            );
+
+                            firework.style.setProperty(
                                 "--flight-bottom",
                                 flightBottom + "px"
                             );
 
                             firework.style.setProperty(
                                 "--flight-75-bottom",
-                                flight75Bottom + "px"
+                                (flightBottom * 0.75) + "px"
                             );
                         });
                     }
