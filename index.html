@@ -407,27 +407,26 @@
             content: "";
             position: absolute;
 
-            /* 比花火本體寬，形成周圍的柔光 */
-            left: -4px;
+            /* 煙霧分布在花火線條兩側 */
+            left: -3px;
             top: 0;
 
-            width: 10px;
+            width: 8px;
             height: 100%;
 
             background: var(--spark-gradient);
 
             border-radius: 50%;
 
-            /* 模糊形成煙霧感 */
-            filter: blur(3.5px);
+            /* 保留柔和煙霧，降低手機繪製負擔 */
+            filter: blur(2.5px);
 
-            opacity: 0.4;
+            opacity: 0.35;
 
             transform: scaleY(1.02);
 
             pointer-events: none;
         }
-
 
         /* 內層：保留原本細長、尖端的花火線條 */
         .spark::after {
@@ -450,12 +449,14 @@
                 38% 55%
             );
 
-            filter: blur(0.35px);
+            /* 讓花火線條稍微柔化 */
+            filter: blur(0.6px);
 
+            /* 線條本身保留亮度，周圍增加柔光 */
             box-shadow:
                 0 0 3px currentColor,
-                0 0 6px currentColor,
-                0 0 10px currentColor;
+                0 0 7px currentColor,
+                0 0 12px currentColor;
 
             pointer-events: none;
         }
