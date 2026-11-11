@@ -2753,11 +2753,11 @@
                         // 同一朵煙火的所有火花共用相同主色
                         firework.querySelectorAll(".spark").forEach(function (spark) {
 
-                            // 每條火花仍然保留獨立的長度變化
+                            // 隨機火花長度：35–105px
                             const sparkHeight =
                                 Math.floor(Math.random() * 71) + 35;
 
-                            // 每條火花仍然保留獨立的擴散距離
+                            // 隨機擴散距離：85–180px
                             const sparkDistance =
                                 Math.floor(Math.random() * 96) + 85;
 
