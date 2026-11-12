@@ -917,35 +917,6 @@
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
         }
 
-        #settings-button {
-            position: fixed;
-            top: 12px;
-            right: 14px;
-            z-index: 160;
-            width: 42px;
-            height: 42px;
-            border: none;
-            border-radius: 50%;
-            background: transparent;
-            color: #888888;
-            font-size: 30px;
-            line-height: 1;
-            cursor: pointer;
-        }
-
-        #settings-button:hover {
-            background: rgba(0, 0, 0, 0.06);
-        }
-
-        #settings-button:active {
-            background: rgba(0, 0, 0, 0.12);
-        }
-
-        #settings-button:focus-visible {
-            outline: 2px solid #888888;
-            outline-offset: 2px;
-        }
-
         #total-list-modal {
             position: fixed;
             inset: 0;
@@ -1024,61 +995,6 @@
             border-radius: 50%;
             background: #eee;
             color: #555;
-            font-size: 26px;
-            cursor: pointer;
-        }
-
-        #settings-modal {
-            position: fixed;
-            inset: 0;
-            z-index: 100000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 16px;
-        }
-
-        #settings-modal.settings-hidden {
-            display: none;
-        }
-
-        .settings-backdrop {
-            position: absolute;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.4);
-        }
-
-        .settings-box {
-            position: relative;
-            z-index: 1;
-            width: 100%;
-            max-width: 600px;
-            max-height: 80vh;
-            max-height: 80dvh;
-            overflow-y: auto;
-            box-sizing: border-box;
-            padding: 24px 16px;
-            border-radius: 16px;
-            background: #fffaf4;
-            color: #493629;
-            text-align: left;
-        }
-
-        .settings-box h2 {
-            margin-top: 0;
-            padding-right: 36px;
-        }
-
-        .settings-close {
-            position: absolute;
-            top: 10px;
-            right: 12px;
-            width: 36px;
-            height: 36px;
-            border: none;
-            border-radius: 50%;
-            background: #eeeeee;
-            color: #555555;
             font-size: 26px;
             cursor: pointer;
         }
@@ -1380,13 +1296,6 @@
 
 <body>
 
-    <button id="settings-button"
-        type="button"
-        aria-label="開啟設定"
-        onclick="openSettings()">
-        ⚙
-    </button>
-
     <div id="meal-selector">
         <h2>要吃哪一餐？</h2>
 
@@ -1526,22 +1435,6 @@
 
             <h3>所有餐點</h3>
             <div id="total-food-list-items"></div>
-        </div>
-    </div>
-
-    <div id="settings-modal" class="settings-hidden">
-        <div class="settings-backdrop" onclick="closeSettings()"></div>
-
-        <div class="settings-box">
-            <button
-                type="button"
-                class="settings-close"
-                onclick="closeSettings()"
-                aria-label="關閉設定"
-            >×</button>
-
-            <h2>⚙️ 設定</h2>
-
         </div>
     </div>
 
@@ -1764,16 +1657,6 @@
         const foodListItems = document.getElementById("food-list-items");
         const totalFoodListItems =
             document.getElementById("total-food-list-items");
-
-        function openSettings() {
-            document.getElementById("settings-modal")
-                .classList.remove("settings-hidden");
-        }
-
-        function closeSettings() {
-            document.getElementById("settings-modal")
-                .classList.add("settings-hidden");
-        }
 
         function toggleTotalSearch() {
             const input = document.getElementById("total-search-input");
@@ -2471,8 +2354,6 @@
             currentMeal = meal;
             document.querySelector(".main-card").classList.add("meal-view");
 
-            document.getElementById("settings-button").style.display = "none";
-
             document.getElementById("meal-title").textContent =
                 meal === "lunch" ? "午餐吃什麼？" : "晚餐咧？";
 
@@ -2524,8 +2405,6 @@
             currentMeal = "total";
             availableFoods = foods;
             document.querySelector(".main-card").classList.remove("meal-view");
-
-            document.getElementById("settings-button").style.display = "";
 
             document.getElementById("meal-selector")
                 .classList.remove("hidden");
