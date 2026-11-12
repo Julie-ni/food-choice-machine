@@ -495,11 +495,10 @@
         @keyframes firework-explosion {
             0% {
                 transform:
-                    translate(-50%, -50%)
+                    translateX(-50%)
                     rotate(var(--angle))
                     translateY(0)
                     scaleY(0.05);
-
                 opacity: 0;
             }
 
@@ -511,7 +510,7 @@
                 opacity: 1;
 
                 transform:
-                    translate(-50%, -50%)
+                    translateX(-50%)
                     rotate(var(--angle))
                     translateY(calc(-1 * var(--distance)))
                     scaleY(1);
@@ -521,7 +520,7 @@
                 opacity: 0.8;
 
                 transform:
-                    translate(-50%, -50%)
+                    translateX(-50%)
                     rotate(var(--angle))
                     translateY(calc(-1 * (var(--distance) + 9px)))
                     scaleY(0.9);
@@ -531,7 +530,7 @@
                 opacity: 0.4;
 
                 transform:
-                    translate(-50%, -50%)
+                    translateX(-50%)
                     rotate(var(--angle))
                     translateY(calc(-1 * (var(--distance) + 18px)))
                     scaleY(0.65);
@@ -546,7 +545,7 @@
                 visibility: hidden;
 
                 transform:
-                    translate(-50%, -50%)
+                    translateX(-50%)
                     rotate(var(--angle))
                     translateY(calc(-1 * (var(--distance) + 25px)))
                     scaleY(0.2);
